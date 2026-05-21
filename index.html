@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Cube Number Explorer — Ganita Prakash Grade 8</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#d8d4cc;
+  --text:#1a1814;--text2:#5a5650;--text3:#9a958e;
+  --blue:#2c5f9e;--red:#c0392b;--green:#1a7a4a;--orange:#e08020;
+  --purple:#6d28d9;
+  --font:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono',ui-monospace,monospace;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
+.page{max-width:880px;margin:0 auto;padding:28px 20px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
+.title{font-size:22px;font-weight:700;margin-bottom:5px}
+.subtitle{font-size:14px;color:var(--text2);margin-bottom:22px;max-width:560px;line-height:1.5}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:22px;margin-bottom:16px}
+.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px}
+
+.tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px}
+.tab{flex:1;padding:7px 0;text-align:center;font-size:12.5px;font-weight:500;color:var(--text2);border-radius:7px;cursor:pointer;border:none;background:none;font-family:var(--font);transition:all .12s}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08);border:1.5px solid var(--border)}
+
+/* ── LAYER VIEW ── */
+.layer-layout{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+@media(max-width:560px){.layer-layout{grid-template-columns:1fr}}
+.n-sl-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.n-sl-row label{font-size:13px;font-weight:500;color:var(--text2)}
+.n-sl-row input{flex:1;max-width:200px;height:5px;accent-color:var(--blue);cursor:pointer}
+.n-sl-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--blue);min-width:24px}
+.layers-wrap{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:center}
+.layer-block{display:flex;flex-direction:column;align-items:center;gap:4px}
+.layer-grid{display:grid;gap:2px}
+.layer-cell{border-radius:3px}
+.layer-lbl{font-size:11px;color:var(--text3);font-weight:500}
+.stats-panel{display:flex;flex-direction:column;gap:10px}
+.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px}
+.stat-card .sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:3px}
+.stat-card .sv{font-family:var(--mono);font-size:20px;font-weight:700}
+.stat-card.highlight{border-color:#9ab4dc;background:rgba(44,95,158,.06)}
+.stat-card.highlight .sv{color:var(--blue)}
+.running-tally{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.tally-row{display:flex;align-items:center;gap:6px;font-size:12.5px;font-family:var(--mono)}
+.tally-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.tally-plus{color:var(--text3)}
+.tally-total{margin-left:auto;font-weight:700;color:var(--blue)}
+
+/* ── TAXICAB ── */
+.taxi-intro{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px;color:var(--text2);line-height:1.6}
+.taxi-intro strong{color:var(--text)}
+.taxi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px}
+.taxi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px}
+.taxi-num{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--purple);margin-bottom:8px}
+.taxi-ways{display:flex;flex-direction:column;gap:7px}
+.taxi-way{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px}
+.tw-top{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
+.tw-check{font-family:var(--mono);font-size:12px;color:var(--green)}
+/* check input */
+.check-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:2px}
+.check-inp{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:15px;font-weight:700;width:150px;background:var(--surface);color:var(--text);outline:none;text-align:center}
+.check-inp:focus{border-color:var(--blue)}
+.btn{padding:7px 18px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;color:var(--text);background:var(--surface);cursor:pointer;font-family:var(--font);transition:all .12s}
+.btn:hover{border-color:var(--text)}
+.btn-go{background:var(--blue);border-color:var(--blue);color:#fff}
+.check-result{font-size:13.5px;font-weight:500;color:var(--text2);font-family:var(--mono)}
+
+/* ── CONSECUTIVE ODDS ── */
+.cos-n-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.cos-n-row label{font-size:13px;font-weight:500;color:var(--text2)}
+.cos-n-row input{flex:1;max-width:200px;height:5px;accent-color:var(--orange);cursor:pointer}
+.cos-n-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--orange);min-width:28px}
+.cos-groups{display:flex;flex-direction:column;gap:8px}
+.cos-group{border-radius:10px;padding:11px 14px;border:1.5px solid;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cos-n-lbl{font-family:var(--mono);font-size:17px;font-weight:700;min-width:38px}
+.cos-odds{display:flex;flex-wrap:wrap;gap:4px;flex:1;align-items:center}
+.cos-odd{padding:3px 8px;border-radius:6px;font-family:var(--mono);font-size:12.5px;font-weight:700;color:#fff}
+.cos-odd.middle{outline:2px solid;outline-offset:2px}
+.cos-plus-sign{font-size:12px;color:var(--text3)}
+.cos-total{font-family:var(--mono);font-size:17px;font-weight:700}
+.cos-note{font-family:var(--mono);font-size:11px;color:var(--text3);flex-shrink:0}
+
+.insight{background:#fff8f0;border:1.5px solid #f0d8c0;border-radius:10px;padding:13px 18px;font-size:13.5px;color:#6b4400;line-height:1.65;margin-top:14px}
+.insight strong{color:#a05000}
+.insight .eq{font-family:var(--mono);font-size:13px;display:block;margin:2px 0}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="lbl">Chapter 1 · A Square and A Cube</div>
+  <div class="title">Cube Number Explorer</div>
+  <div class="subtitle">n³ = n layers of n×n. See it built layer by layer, explore Ramanujan's taxicab number 1729, and discover how consecutive odd numbers sum to every cube.</div>
+
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" id="t0" onclick="switchTab(0)">Build layer by layer</button>
+      <button class="tab" id="t1" onclick="switchTab(1)">Taxicab numbers</button>
+      <button class="tab" id="t2" onclick="switchTab(2)">Consecutive odds</button>
+    </div>
+
+    <!-- LAYERS -->
+    <div id="v0">
+      <div class="n-sl-row">
+        <label>n =</label>
+        <input type="range" id="cubeN" min="1" max="6" value="3" oninput="updateCube()">
+        <span class="nv" id="cubeNv">3</span>
+      </div>
+      <div class="layer-layout">
+        <div class="layers-wrap" id="layersWrap"></div>
+        <div class="stats-panel" id="statsPanel"></div>
+      </div>
+    </div>
+
+    <!-- TAXICAB -->
+    <div id="v1" style="display:none">
+      <div class="taxi-intro">
+        Hardy visited Ramanujan in hospital after arriving in taxi <strong>#1729</strong>. He remarked it was "rather a dull number." Ramanujan replied immediately: <strong>"No, it is the smallest number expressible as the sum of two cubes in two different ways."</strong>
+      </div>
+      <div class="taxi-grid" id="taxiGrid"></div>
+      <div class="card-title">Check your own number</div>
+      <div class="check-row">
+        <input type="number" class="check-inp" id="taxiIn" value="4104">
+        <button class="btn btn-go" onclick="checkTaxi()">Check</button>
+        <span class="check-result" id="taxiResult"></span>
+      </div>
+    </div>
+
+    <!-- CONSECUTIVE ODDS -->
+    <div id="v2" style="display:none">
+      <div class="cos-n-row">
+        <label>Show cubes up to n =</label>
+        <input type="range" id="cosN" min="1" max="10" value="6" oninput="buildCOS()">
+        <span class="nv" id="cosNv">6</span>
+      </div>
+      <div class="cos-groups" id="cosGroups"></div>
+      <div class="insight">
+        <strong>Pattern:</strong> The n³ group has n consecutive odd numbers, and its middle number is always n².
+        <span class="eq">Example: 10³ = 91+93+95+97+99+101+103+105+107+109, middle = 100 = 10²</span>
+        Each group starts exactly where the previous one ended — no gaps.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LAYER_COLORS=['#2c5f9e','#c0392b','#1a7a4a','#e08020','#7c3aed','#0891b2'];
+
+// ── Layers ──────────────────────────────────────────────────────────────────
+function updateCube(){
+  const n=parseInt(document.getElementById('cubeN').value);
+  document.getElementById('cubeNv').textContent=n;
+  const CELL=Math.max(14,Math.min(28,Math.floor(200/n)));
+  const wrap=document.getElementById('layersWrap');
+  wrap.innerHTML='';
+  for(let layer=0;layer<n;layer++){
+    const color=LAYER_COLORS[layer%LAYER_COLORS.length];
+    const block=document.createElement('div');
+    block.className='layer-block';
+    const g=document.createElement('div');
+    g.className='layer-grid';
+    g.style.cssText=`grid-template-columns:repeat(${n},${CELL}px);gap:2px`;
+    for(let i=0;i<n*n;i++){
+      const cell=document.createElement('div');
+      cell.className='layer-cell';
+      cell.style.cssText=`width:${CELL}px;height:${CELL}px;background:${color};opacity:${0.55+layer/n*0.45}`;
+      g.appendChild(cell);
+    }
+    const lbl=document.createElement('div');
+    lbl.className='layer-lbl';
+    lbl.textContent=`Layer ${layer+1}: ${n}×${n} = ${n*n}`;
+    block.appendChild(g);block.appendChild(lbl);
+    wrap.appendChild(block);
+  }
+
+  const stats=document.getElementById('statsPanel');
+  let tallyHtml='';
+  for(let i=0;i<n;i++){
+    const c=LAYER_COLORS[i%LAYER_COLORS.length];
+    tallyHtml+=`<div class="tally-row"><div class="tally-dot" style="background:${c}"></div><span>Layer ${i+1}</span><span class="tally-plus">= ${n*n}</span><span class="tally-total">${n*n*(i+1)}</span></div>`;
+  }
+  stats.innerHTML=`
+    <div class="stat-card"><div class="sl">Side length</div><div class="sv">n = ${n}</div></div>
+    <div class="stat-card"><div class="sl">One layer (n×n)</div><div class="sv">${n} × ${n} = ${n*n} cubes</div></div>
+    <div class="stat-card"><div class="sl">Number of layers</div><div class="sv">${n}</div></div>
+    <div class="stat-card highlight"><div class="sl">Total = n³</div><div class="sv">${n}³ = ${n**3}</div>
+      <div class="running-tally">${tallyHtml}</div>
+    </div>`;
+}
+
+// ── Taxicab ──────────────────────────────────────────────────────────────────
+const TAXIS=[
+  {n:1729,ways:[{a:1,b:12},{a:9,b:10}]},
+  {n:4104,ways:[{a:2,b:16},{a:9,b:15}]},
+  {n:13832,ways:[{a:2,b:24},{a:18,b:20}]},
+];
+
+function buildTaxi(){
+  const grid=document.getElementById('taxiGrid');
+  grid.innerHTML='';
+  TAXIS.forEach(t=>{
+    const card=document.createElement('div');
+    card.className='taxi-card';
+    const wHtml=t.ways.map((w,i)=>`
+      <div class="taxi-way">
+        <div class="tw-top">Way ${i+1}: ${w.a}³ + ${w.b}³</div>
+        <div class="tw-check">${w.a**3} + ${w.b**3} = ${w.a**3+w.b**3} ✓</div>
+      </div>`).join('');
+    card.innerHTML=`<div class="taxi-num">${t.n}</div><div class="taxi-ways">${wHtml}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function checkTaxi(){
+  const num=parseInt(document.getElementById('taxiIn').value)||1;
+  const ways=[];
+  for(let a=1;a<=Math.cbrt(num/2)+1;a++){
+    const b3=num-a**3;
+    const b=Math.round(Math.cbrt(b3));
+    if(b>=a&&Math.abs(b**3-b3)<0.5) ways.push({a,b});
+  }
+  const el=document.getElementById('taxiResult');
+  if(ways.length===0) el.textContent=`No decomposition as sum of two cubes`;
+  else if(ways.length===1) el.textContent=`${num} = ${ways[0].a}³+${ways[0].b}³ (one way — not taxicab)`;
+  else el.textContent=`Taxicab! ${ways.map(w=>`${w.a}³+${w.b}³`).join(' = ')} = ${num}`;
+}
+
+// ── Consecutive odds ──────────────────────────────────────────────────────────
+function buildCOS(){
+  const nMax=parseInt(document.getElementById('cosN').value);
+  document.getElementById('cosNv').textContent=nMax;
+  const cont=document.getElementById('cosGroups');
+  cont.innerHTML='';
+  let cursor=1;
+  for(let n=1;n<=nMax;n++){
+    const color=LAYER_COLORS[(n-1)%LAYER_COLORS.length];
+    const odds=[];
+    for(let i=0;i<n;i++){odds.push(cursor);cursor+=2;}
+    const sum=odds.reduce((a,b)=>a+b,0);
+    const midIdx=Math.floor((n-1)/2);
+    const div=document.createElement('div');
+    div.className='cos-group';
+    div.style.cssText=`border-color:${color}44;background:${color}08`;
+    const oddsHtml=odds.map((o,i)=>{
+      const isM=n>1&&i===midIdx;
+      return `<span class="cos-odd${isM?' middle':''}" style="background:${color}bb;${isM?`outline-color:${color}`:''}">
+        ${o}</span>${i<odds.length-1?'<span class="cos-plus-sign">+</span>':''}`;
+    }).join('');
+    div.innerHTML=`
+      <span class="cos-n-lbl" style="color:${color}">${n}³</span>
+      <div class="cos-odds">${oddsHtml}</div>
+      <span class="cos-total" style="color:${color}">= ${sum}</span>
+      <span class="cos-note">middle=${odds[midIdx]}=${n}²</span>`;
+    cont.appendChild(div);
+  }
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(i){
+  ['t0','t1','t2'].forEach((id,j)=>{document.getElementById(id).classList.toggle('active',j===i);document.getElementById('v'+j).style.display=j===i?'block':'none';});
+  if(i===1)buildTaxi();
+  if(i===2)buildCOS();
+}
+
+updateCube();
+</script>
+</body>
+</html>
