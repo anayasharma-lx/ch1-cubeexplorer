@@ -3,270 +3,752 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Cube Number Explorer — Ganita Prakash Grade 8</title>
+<title>3D Cube Explorer — Ganita Prakash Grade 8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#d8d4cc;
   --text:#1a1814;--text2:#5a5650;--text3:#9a958e;
   --blue:#2c5f9e;--red:#c0392b;--green:#1a7a4a;--orange:#e08020;
-  --purple:#6d28d9;
-  --font:'DM Sans',-apple-system,sans-serif;--mono:'DM Mono',ui-monospace,monospace;
+  --purple:#7a5cb0;
+  --font:'DM Sans',-apple-system,sans-serif;
+  --mono:'DM Mono',ui-monospace,monospace;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;-webkit-font-smoothing:antialiased;line-height:1.5}
-.page{max-width:880px;margin:0 auto;padding:28px 20px}
-.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:5px}
-.title{font-size:22px;font-weight:700;margin-bottom:5px}
-.subtitle{font-size:14px;color:var(--text2);margin-bottom:22px;max-width:560px;line-height:1.5}
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:22px;margin-bottom:16px}
-.card-title{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;
+  -webkit-font-smoothing:antialiased;padding:24px 16px;line-height:1.5}
+.app{max-width:960px;margin:0 auto}
 
-.tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px}
-.tab{flex:1;padding:7px 0;text-align:center;font-size:12.5px;font-weight:500;color:var(--text2);border-radius:7px;cursor:pointer;border:none;background:none;font-family:var(--font);transition:all .12s}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 4px rgba(0,0,0,.08);border:1.5px solid var(--border)}
+.head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.head-ic{width:42px;height:42px;border-radius:10px;background:var(--surface2);
+  border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-weight:600;color:var(--text2);font-size:16px;flex-shrink:0}
+.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:2px}
+.title{font-size:22px;font-weight:700;color:var(--text);line-height:1.2}
 
-/* ── LAYER VIEW ── */
-.layer-layout{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
-@media(max-width:560px){.layer-layout{grid-template-columns:1fr}}
-.n-sl-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.n-sl-row label{font-size:13px;font-weight:500;color:var(--text2)}
-.n-sl-row input{flex:1;max-width:200px;height:5px;accent-color:var(--blue);cursor:pointer}
-.n-sl-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--blue);min-width:24px}
-.layers-wrap{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px;display:flex;flex-direction:column;gap:10px;align-items:center}
-.layer-block{display:flex;flex-direction:column;align-items:center;gap:4px}
-.layer-grid{display:grid;gap:2px}
-.layer-cell{border-radius:3px}
-.layer-lbl{font-size:11px;color:var(--text3);font-weight:500}
-.stats-panel{display:flex;flex-direction:column;gap:10px}
-.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px}
-.stat-card .sl{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:3px}
-.stat-card .sv{font-family:var(--mono);font-size:20px;font-weight:700}
-.stat-card.highlight{border-color:#9ab4dc;background:rgba(44,95,158,.06)}
-.stat-card.highlight .sv{color:var(--blue)}
-.running-tally{display:flex;flex-direction:column;gap:3px;margin-top:8px}
-.tally-row{display:flex;align-items:center;gap:6px;font-size:12.5px;font-family:var(--mono)}
-.tally-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-.tally-plus{color:var(--text3)}
-.tally-total{margin-left:auto;font-weight:700;color:var(--blue)}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
+  padding:22px;margin-bottom:16px}
 
-/* ── TAXICAB ── */
-.taxi-intro{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;margin-bottom:16px;font-size:13.5px;color:var(--text2);line-height:1.6}
-.taxi-intro strong{color:var(--text)}
-.taxi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-bottom:16px}
-.taxi-card{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:14px 16px}
-.taxi-num{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--purple);margin-bottom:8px}
-.taxi-ways{display:flex;flex-direction:column;gap:7px}
-.taxi-way{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:8px 12px}
-.tw-top{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px}
-.tw-check{font-family:var(--mono);font-size:12px;color:var(--green)}
-/* check input */
-.check-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:2px}
-.check-inp{padding:7px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:var(--mono);font-size:15px;font-weight:700;width:150px;background:var(--surface);color:var(--text);outline:none;text-align:center}
-.check-inp:focus{border-color:var(--blue)}
-.btn{padding:7px 18px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;font-weight:500;color:var(--text);background:var(--surface);cursor:pointer;font-family:var(--font);transition:all .12s}
-.btn:hover{border-color:var(--text)}
-.btn-go{background:var(--blue);border-color:var(--blue);color:#fff}
-.check-result{font-size:13.5px;font-weight:500;color:var(--text2);font-family:var(--mono)}
+/* Tabs */
+.tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:10px;padding:4px;margin-bottom:20px}
+.tab{flex:1;padding:9px 8px;border:none;background:transparent;border-radius:7px;
+  font-family:var(--font);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;
+  transition:all .15s;text-align:center}
+.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);
+  border:1.5px solid var(--border)}
 
-/* ── CONSECUTIVE ODDS ── */
-.cos-n-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
-.cos-n-row label{font-size:13px;font-weight:500;color:var(--text2)}
-.cos-n-row input{flex:1;max-width:200px;height:5px;accent-color:var(--orange);cursor:pointer}
-.cos-n-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--orange);min-width:28px}
-.cos-groups{display:flex;flex-direction:column;gap:8px}
-.cos-group{border-radius:10px;padding:11px 14px;border:1.5px solid;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.cos-n-lbl{font-family:var(--mono);font-size:17px;font-weight:700;min-width:38px}
-.cos-odds{display:flex;flex-wrap:wrap;gap:4px;flex:1;align-items:center}
-.cos-odd{padding:3px 8px;border-radius:6px;font-family:var(--mono);font-size:12.5px;font-weight:700;color:#fff}
-.cos-odd.middle{outline:2px solid;outline-offset:2px}
-.cos-plus-sign{font-size:12px;color:var(--text3)}
-.cos-total{font-family:var(--mono);font-size:17px;font-weight:700}
-.cos-note{font-family:var(--mono);font-size:11px;color:var(--text3);flex-shrink:0}
+/* Main 3D layout */
+.scene-layout{display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start}
+@media(max-width:720px){.scene-layout{grid-template-columns:1fr}}
 
-.insight{background:#fff8f0;border:1.5px solid #f0d8c0;border-radius:10px;padding:13px 18px;font-size:13.5px;color:#6b4400;line-height:1.65;margin-top:14px}
-.insight strong{color:#a05000}
-.insight .eq{font-family:var(--mono);font-size:13px;display:block;margin:2px 0}
+/* Canvas container */
+.canvas-wrap{position:relative;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:10px;overflow:hidden;height:420px;touch-action:none;cursor:grab}
+.canvas-wrap:active{cursor:grabbing}
+.canvas-wrap canvas{display:block;width:100%!important;height:100%!important}
+.hint-label{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;pointer-events:none;background:rgba(245,244,240,.8);
+  padding:4px 10px;border-radius:6px;white-space:nowrap}
+
+/* Side panel */
+.side-panel{display:flex;flex-direction:column;gap:12px}
+.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;
+  padding:12px 14px}
+.stat-card.hl{background:#2c5f9e10;border-color:#9ab4dc}
+.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
+  color:var(--text3);margin-bottom:3px}
+.sc-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);line-height:1.1}
+.sc-val.blue{color:var(--blue)}
+.sc-val.sm{font-size:15px}
+
+/* Controls */
+.ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ctrl-row label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;
+  letter-spacing:.4px;white-space:nowrap}
+.ctrl-row input[type=range]{flex:1;accent-color:var(--blue);height:5px}
+.ctrl-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--blue);
+  min-width:28px;text-align:right}
+
+/* Layer stepper buttons */
+.layer-btns{display:flex;gap:6px;margin-bottom:12px;align-items:center}
+.layer-btn{width:38px;height:38px;border-radius:8px;border:1.5px solid var(--border);
+  background:var(--surface);font-family:var(--mono);font-size:20px;font-weight:700;
+  color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .12s;user-select:none;line-height:1}
+.layer-btn:hover{border-color:var(--text3);background:var(--surface2)}
+.layer-btn:active{transform:scale(.94)}
+.layer-btn.add{background:var(--blue);border-color:var(--blue);color:#fff}
+.layer-btn.add:hover{background:#234d83;border-color:#234d83}
+.layer-count{font-family:var(--mono);font-size:16px;font-weight:700;
+  background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;
+  padding:6px 14px;text-align:center;flex:1}
+
+/* Layer list */
+.layer-list{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto}
+.layer-item{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;
+  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);
+  cursor:pointer;transition:all .12s}
+.layer-item:hover{border-color:var(--text3)}
+.layer-item.active{background:var(--surface);border-color:var(--blue)}
+.layer-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.layer-remove{margin-left:auto;width:18px;height:18px;border-radius:4px;
+  background:transparent;border:none;color:var(--text3);cursor:pointer;
+  font-size:14px;display:flex;align-items:center;justify-content:center;
+  line-height:1;transition:all .12s}
+.layer-remove:hover{background:#c0392b20;color:var(--red)}
+
+/* Odds view */
+.odds-legend{display:flex;flex-direction:column;gap:5px}
+.odds-item{display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;
+  font-family:var(--mono);font-size:12px}
+.odds-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
+.odds-num{font-weight:700;flex:1}
+.odds-val{color:var(--text3)}
+
+/* Insight */
+.insight{background:#fff8f0;border:1px solid #f0d8c0;border-left:3px solid var(--orange);
+  border-radius:0 8px 8px 0;padding:11px 14px;font-size:13px;color:#6b4400;line-height:1.65;
+  margin-top:12px}
+.insight strong{color:#4a2e00}
+
+/* Reset orbit btn */
+.orbit-btn{padding:7px 12px;border-radius:7px;background:var(--surface);
+  border:1.5px solid var(--border);font-family:var(--font);font-size:12px;
+  font-weight:600;color:var(--text2);cursor:pointer;transition:all .12s;
+  text-align:center}
+.orbit-btn:hover{border-color:var(--text3);color:var(--text)}
+
+.view{display:none}
+.view.active{display:block}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="lbl">Chapter 1 · A Square and A Cube</div>
-  <div class="title">Cube Number Explorer</div>
-  <div class="subtitle">n³ = n layers of n×n. See it built layer by layer, explore Ramanujan's taxicab number 1729, and discover how consecutive odd numbers sum to every cube.</div>
+<div class="app">
+  <div class="head">
+    <div class="head-ic">1</div>
+    <div>
+      <div class="lbl">Chapter 1 · A Square and A Cube</div>
+      <div class="title">3D Cube Explorer</div>
+    </div>
+  </div>
 
   <div class="card">
     <div class="tabs">
-      <button class="tab active" id="t0" onclick="switchTab(0)">Build layer by layer</button>
-      <button class="tab" id="t1" onclick="switchTab(1)">Taxicab numbers</button>
-      <button class="tab" id="t2" onclick="switchTab(2)">Consecutive odds</button>
+      <button class="tab active" data-tab="layers">Build layer by layer</button>
+      <button class="tab" data-tab="odds">Consecutive odds</button>
+      <button class="tab" data-tab="taxi">Taxicab 1729</button>
     </div>
 
-    <!-- LAYERS -->
-    <div id="v0">
-      <div class="n-sl-row">
-        <label>n =</label>
-        <input type="range" id="cubeN" min="1" max="6" value="3" oninput="updateCube()">
-        <span class="nv" id="cubeNv">3</span>
+    <!-- LAYERS TAB -->
+    <div class="view active" id="view-layers">
+      <div class="ctrl-row" style="margin-bottom:12px">
+        <label>Cube size n</label>
+        <input type="range" id="layerN" min="1" max="6" value="3">
+        <span class="nv" id="layerNv">3</span>
       </div>
-      <div class="layer-layout">
-        <div class="layers-wrap" id="layersWrap"></div>
-        <div class="stats-panel" id="statsPanel"></div>
+      <div class="scene-layout">
+        <div>
+          <div class="canvas-wrap" id="canvas-layers">
+            <canvas id="c-layers"></canvas>
+            <div class="hint-label">Drag to rotate · Scroll to zoom</div>
+          </div>
+          <div class="layer-btns" style="margin-top:12px">
+            <button class="layer-btn" id="btn-remove-layer" title="Remove top layer">−</button>
+            <div class="layer-count" id="layer-count-display">3 of 3 layers</div>
+            <button class="layer-btn add" id="btn-add-layer" title="Add a layer">+</button>
+          </div>
+        </div>
+        <div class="side-panel">
+          <div class="stat-card">
+            <div class="sc-lbl">One layer</div>
+            <div class="sc-val sm" id="layer-stat-one">3 × 3 = 9 cubes</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-lbl">Layers shown</div>
+            <div class="sc-val" id="layer-stat-shown">3</div>
+          </div>
+          <div class="stat-card hl">
+            <div class="sc-lbl">Total unit cubes</div>
+            <div class="sc-val blue" id="layer-stat-total">27 = 3³</div>
+          </div>
+          <div class="sc-lbl" style="margin-top:4px;margin-bottom:4px">Layers</div>
+          <div class="layer-list" id="layer-list"></div>
+          <button class="orbit-btn" id="reset-layers-cam">Reset view</button>
+        </div>
       </div>
     </div>
 
-    <!-- TAXICAB -->
-    <div id="v1" style="display:none">
-      <div class="taxi-intro">
-        Hardy visited Ramanujan in hospital after arriving in taxi <strong>#1729</strong>. He remarked it was "rather a dull number." Ramanujan replied immediately: <strong>"No, it is the smallest number expressible as the sum of two cubes in two different ways."</strong>
+    <!-- ODDS TAB -->
+    <div class="view" id="view-odds">
+      <div class="ctrl-row" style="margin-bottom:12px">
+        <label>Cube n</label>
+        <input type="range" id="oddsN" min="1" max="6" value="3">
+        <span class="nv" id="oddsNv">3</span>
       </div>
-      <div class="taxi-grid" id="taxiGrid"></div>
-      <div class="card-title">Check your own number</div>
-      <div class="check-row">
-        <input type="number" class="check-inp" id="taxiIn" value="4104">
-        <button class="btn btn-go" onclick="checkTaxi()">Check</button>
-        <span class="check-result" id="taxiResult"></span>
+      <div class="scene-layout">
+        <div>
+          <div class="canvas-wrap" id="canvas-odds">
+            <canvas id="c-odds"></canvas>
+            <div class="hint-label">Drag to rotate · Colors show each odd</div>
+          </div>
+        </div>
+        <div class="side-panel">
+          <div class="stat-card hl">
+            <div class="sc-lbl">Identity</div>
+            <div class="sc-val sm" id="odds-identity">7 + 9 + 11 = 27 = 3³</div>
+          </div>
+          <div class="stat-card">
+            <div class="sc-lbl">Middle number</div>
+            <div class="sc-val blue" id="odds-middle">9 = 3² = n²</div>
+          </div>
+          <div class="sc-lbl" style="margin-top:4px;margin-bottom:6px">Each odd number</div>
+          <div class="odds-legend" id="odds-legend"></div>
+          <button class="orbit-btn" id="reset-odds-cam" style="margin-top:4px">Reset view</button>
+          <div class="insight">
+            <strong>The middle odd is always n².</strong> The n consecutive odds form colored bands through the cube — adding them all gives exactly n³.
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- CONSECUTIVE ODDS -->
-    <div id="v2" style="display:none">
-      <div class="cos-n-row">
-        <label>Show cubes up to n =</label>
-        <input type="range" id="cosN" min="1" max="10" value="6" oninput="buildCOS()">
-        <span class="nv" id="cosNv">6</span>
+    <!-- TAXI TAB -->
+    <div class="view" id="view-taxi">
+      <div style="margin-bottom:12px;font-size:14px;color:var(--text2);line-height:1.65">
+        Hardy arrived in taxi <strong style="color:var(--text)">#1729</strong>. "Rather a dull number," he said. Ramanujan replied instantly: <em>"No — it is the smallest number expressible as the sum of two cubes in two different ways."</em>
       </div>
-      <div class="cos-groups" id="cosGroups"></div>
-      <div class="insight">
-        <strong>Pattern:</strong> The n³ group has n consecutive odd numbers, and its middle number is always n².
-        <span class="eq">Example: 10³ = 91+93+95+97+99+101+103+105+107+109, middle = 100 = 10²</span>
-        Each group starts exactly where the previous one ended — no gaps.
+      <div class="scene-layout">
+        <div>
+          <div class="canvas-wrap" id="canvas-taxi">
+            <canvas id="c-taxi"></canvas>
+            <div class="hint-label" id="taxi-hint">Drag to rotate · Toggle: 1³+12³ vs 9³+10³</div>
+          </div>
+          <div class="layer-btns" style="margin-top:12px;justify-content:center">
+            <button class="layer-btn" id="taxi-way-btn" style="width:auto;padding:0 18px;font-size:14px;font-family:var(--font)">
+              Show way 2: 9³ + 10³
+            </button>
+          </div>
+        </div>
+        <div class="side-panel">
+          <div class="stat-card">
+            <div class="sc-lbl">The taxicab number</div>
+            <div class="sc-val blue">1729</div>
+          </div>
+          <div class="stat-card" id="taxi-way1-card">
+            <div class="sc-lbl">Way 1</div>
+            <div class="sc-val sm">1³ + 12³</div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:4px">1 + 1728 = 1729 ✓</div>
+          </div>
+          <div class="stat-card" id="taxi-way2-card">
+            <div class="sc-lbl">Way 2</div>
+            <div class="sc-val sm">9³ + 10³</div>
+            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:4px">729 + 1000 = 1729 ✓</div>
+          </div>
+          <button class="orbit-btn" id="reset-taxi-cam">Reset view</button>
+          <div class="insight">
+            <strong>Why remarkable?</strong> Most numbers can't even be written as one sum of two cubes. Finding a number with two different ways is exceedingly rare — 1729 is the very smallest.
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-const LAYER_COLORS=['#2c5f9e','#c0392b','#1a7a4a','#e08020','#7c3aed','#0891b2'];
-
-// ── Layers ──────────────────────────────────────────────────────────────────
-function updateCube(){
-  const n=parseInt(document.getElementById('cubeN').value);
-  document.getElementById('cubeNv').textContent=n;
-  const CELL=Math.max(14,Math.min(28,Math.floor(200/n)));
-  const wrap=document.getElementById('layersWrap');
-  wrap.innerHTML='';
-  for(let layer=0;layer<n;layer++){
-    const color=LAYER_COLORS[layer%LAYER_COLORS.length];
-    const block=document.createElement('div');
-    block.className='layer-block';
-    const g=document.createElement('div');
-    g.className='layer-grid';
-    g.style.cssText=`grid-template-columns:repeat(${n},${CELL}px);gap:2px`;
-    for(let i=0;i<n*n;i++){
-      const cell=document.createElement('div');
-      cell.className='layer-cell';
-      cell.style.cssText=`width:${CELL}px;height:${CELL}px;background:${color};opacity:${0.55+layer/n*0.45}`;
-      g.appendChild(cell);
-    }
-    const lbl=document.createElement('div');
-    lbl.className='layer-lbl';
-    lbl.textContent=`Layer ${layer+1}: ${n}×${n} = ${n*n}`;
-    block.appendChild(g);block.appendChild(lbl);
-    wrap.appendChild(block);
-  }
-
-  const stats=document.getElementById('statsPanel');
-  let tallyHtml='';
-  for(let i=0;i<n;i++){
-    const c=LAYER_COLORS[i%LAYER_COLORS.length];
-    tallyHtml+=`<div class="tally-row"><div class="tally-dot" style="background:${c}"></div><span>Layer ${i+1}</span><span class="tally-plus">= ${n*n}</span><span class="tally-total">${n*n*(i+1)}</span></div>`;
-  }
-  stats.innerHTML=`
-    <div class="stat-card"><div class="sl">Side length</div><div class="sv">n = ${n}</div></div>
-    <div class="stat-card"><div class="sl">One layer (n×n)</div><div class="sv">${n} × ${n} = ${n*n} cubes</div></div>
-    <div class="stat-card"><div class="sl">Number of layers</div><div class="sv">${n}</div></div>
-    <div class="stat-card highlight"><div class="sl">Total = n³</div><div class="sv">${n}³ = ${n**3}</div>
-      <div class="running-tally">${tallyHtml}</div>
-    </div>`;
-}
-
-// ── Taxicab ──────────────────────────────────────────────────────────────────
-const TAXIS=[
-  {n:1729,ways:[{a:1,b:12},{a:9,b:10}]},
-  {n:4104,ways:[{a:2,b:16},{a:9,b:15}]},
-  {n:13832,ways:[{a:2,b:24},{a:18,b:20}]},
+// ═══════════════════════════════════════════════════════════════════
+// COLOR PALETTE
+// ═══════════════════════════════════════════════════════════════════
+const LAYER_COLORS = [
+  0x2c5f9e, // blue
+  0xc0392b, // red
+  0x1a7a4a, // green
+  0xe08020, // orange
+  0x7a5cb0, // purple
+  0x0891b2, // teal
 ];
 
-function buildTaxi(){
-  const grid=document.getElementById('taxiGrid');
-  grid.innerHTML='';
-  TAXIS.forEach(t=>{
-    const card=document.createElement('div');
-    card.className='taxi-card';
-    const wHtml=t.ways.map((w,i)=>`
-      <div class="taxi-way">
-        <div class="tw-top">Way ${i+1}: ${w.a}³ + ${w.b}³</div>
-        <div class="tw-check">${w.a**3} + ${w.b**3} = ${w.a**3+w.b**3} ✓</div>
-      </div>`).join('');
-    card.innerHTML=`<div class="taxi-num">${t.n}</div><div class="taxi-ways">${wHtml}</div>`;
-    grid.appendChild(card);
+const ODDS_COLORS = [
+  0x2c5f9e,
+  0xc0392b,
+  0x1a7a4a,
+  0xe08020,
+  0x7a5cb0,
+  0x0891b2,
+];
+
+function hexCSS(hex){return '#'+hex.toString(16).padStart(6,'0')}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHARED THREE.JS SCENE BUILDER
+// ═══════════════════════════════════════════════════════════════════
+function createScene(canvasId, wrapId){
+  const canvas = document.getElementById(canvasId);
+  const wrap = document.getElementById(wrapId);
+  const W = wrap.clientWidth, H = wrap.clientHeight;
+
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.setSize(W, H);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xf0ede8);
+
+  const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 200);
+  camera.position.set(10, 10, 10);
+  camera.lookAt(0, 0, 0);
+
+  // Lights
+  const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+  scene.add(ambient);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
+  dirLight.position.set(8, 14, 10);
+  dirLight.castShadow = true;
+  dirLight.shadow.mapSize.set(1024,1024);
+  scene.add(dirLight);
+  const fillLight = new THREE.DirectionalLight(0xc8d8f0, 0.3);
+  fillLight.position.set(-6,-4,-8);
+  scene.add(fillLight);
+
+  // Orbit state
+  let orbit = {theta: 0.7, phi: 0.6, dist: 14, isDragging:false, lastX:0, lastY:0};
+
+  function updateCamera(){
+    const x = orbit.dist * Math.sin(orbit.phi) * Math.sin(orbit.theta);
+    const y = orbit.dist * Math.cos(orbit.phi);
+    const z = orbit.dist * Math.sin(orbit.phi) * Math.cos(orbit.theta);
+    camera.position.set(x, y, z);
+    camera.lookAt(0, 0, 0);
+  }
+  updateCamera();
+
+  // Pointer events for orbit
+  wrap.addEventListener('pointerdown', e => {
+    orbit.isDragging = true;
+    orbit.lastX = e.clientX;
+    orbit.lastY = e.clientY;
+    wrap.setPointerCapture(e.pointerId);
   });
-}
+  wrap.addEventListener('pointermove', e => {
+    if(!orbit.isDragging) return;
+    const dx = e.clientX - orbit.lastX;
+    const dy = e.clientY - orbit.lastY;
+    orbit.theta -= dx * 0.012;
+    orbit.phi = Math.max(0.15, Math.min(Math.PI-0.15, orbit.phi + dy*0.012));
+    orbit.lastX = e.clientX;
+    orbit.lastY = e.clientY;
+    updateCamera();
+  });
+  wrap.addEventListener('pointerup', () => { orbit.isDragging = false; });
+  wrap.addEventListener('wheel', e => {
+    e.preventDefault();
+    orbit.dist = Math.max(4, Math.min(40, orbit.dist + e.deltaY * 0.02));
+    updateCamera();
+  }, {passive:false});
 
-function checkTaxi(){
-  const num=parseInt(document.getElementById('taxiIn').value)||1;
-  const ways=[];
-  for(let a=1;a<=Math.cbrt(num/2)+1;a++){
-    const b3=num-a**3;
-    const b=Math.round(Math.cbrt(b3));
-    if(b>=a&&Math.abs(b**3-b3)<0.5) ways.push({a,b});
+  // Resize
+  const ro = new ResizeObserver(() => {
+    const w = wrap.clientWidth, h = wrap.clientHeight;
+    renderer.setSize(w, h);
+    camera.aspect = w/h;
+    camera.updateProjectionMatrix();
+  });
+  ro.observe(wrap);
+
+  function resetCamera(dist=14){
+    orbit.theta = 0.7; orbit.phi = 0.6; orbit.dist = dist;
+    updateCamera();
   }
-  const el=document.getElementById('taxiResult');
-  if(ways.length===0) el.textContent=`No decomposition as sum of two cubes`;
-  else if(ways.length===1) el.textContent=`${num} = ${ways[0].a}³+${ways[0].b}³ (one way — not taxicab)`;
-  else el.textContent=`Taxicab! ${ways.map(w=>`${w.a}³+${w.b}³`).join(' = ')} = ${num}`;
-}
 
-// ── Consecutive odds ──────────────────────────────────────────────────────────
-function buildCOS(){
-  const nMax=parseInt(document.getElementById('cosN').value);
-  document.getElementById('cosNv').textContent=nMax;
-  const cont=document.getElementById('cosGroups');
-  cont.innerHTML='';
-  let cursor=1;
-  for(let n=1;n<=nMax;n++){
-    const color=LAYER_COLORS[(n-1)%LAYER_COLORS.length];
-    const odds=[];
-    for(let i=0;i<n;i++){odds.push(cursor);cursor+=2;}
-    const sum=odds.reduce((a,b)=>a+b,0);
-    const midIdx=Math.floor((n-1)/2);
-    const div=document.createElement('div');
-    div.className='cos-group';
-    div.style.cssText=`border-color:${color}44;background:${color}08`;
-    const oddsHtml=odds.map((o,i)=>{
-      const isM=n>1&&i===midIdx;
-      return `<span class="cos-odd${isM?' middle':''}" style="background:${color}bb;${isM?`outline-color:${color}`:''}">
-        ${o}</span>${i<odds.length-1?'<span class="cos-plus-sign">+</span>':''}`;
-    }).join('');
-    div.innerHTML=`
-      <span class="cos-n-lbl" style="color:${color}">${n}³</span>
-      <div class="cos-odds">${oddsHtml}</div>
-      <span class="cos-total" style="color:${color}">= ${sum}</span>
-      <span class="cos-note">middle=${odds[midIdx]}=${n}²</span>`;
-    cont.appendChild(div);
+  let animId;
+  function animate(){
+    animId = requestAnimationFrame(animate);
+    renderer.render(scene, camera);
   }
+  animate();
+
+  function destroy(){
+    cancelAnimationFrame(animId);
+    ro.disconnect();
+    renderer.dispose();
+  }
+
+  return {scene, camera, renderer, resetCamera, destroy};
 }
 
-// ── Tabs ──────────────────────────────────────────────────────────────────────
-function switchTab(i){
-  ['t0','t1','t2'].forEach((id,j)=>{document.getElementById(id).classList.toggle('active',j===i);document.getElementById('v'+j).style.display=j===i?'block':'none';});
-  if(i===1)buildTaxi();
-  if(i===2)buildCOS();
+// ═══════════════════════════════════════════════════════════════════
+// UNIT CUBE HELPER
+// ═══════════════════════════════════════════════════════════════════
+const cubeGeo = new THREE.BoxGeometry(0.92, 0.92, 0.92);
+const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.92,0.92,0.92));
+
+function makeCube(color, x, y, z){
+  const mat = new THREE.MeshLambertMaterial({color});
+  const mesh = new THREE.Mesh(cubeGeo, mat);
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  mesh.position.set(x, y, z);
+
+  const edgeMat = new THREE.LineBasicMaterial({color:0x000000, transparent:true, opacity:0.12});
+  const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+  mesh.add(edges);
+  return mesh;
 }
 
-updateCube();
+// ═══════════════════════════════════════════════════════════════════
+// CONSECUTIVE ODDS MATH
+// ═══════════════════════════════════════════════════════════════════
+function getOddsForN(n){
+  // Returns the n odd numbers that sum to n^3
+  let cursor = 1;
+  for(let k=1; k<n; k++){
+    cursor += 2*k; // skip the k odd numbers for cube k
+  }
+  const odds=[];
+  for(let i=0;i<n;i++){odds.push(cursor);cursor+=2;}
+  return odds;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TAB 1: LAYERS
+// ═══════════════════════════════════════════════════════════════════
+(function(){
+  const sceneObj = createScene('c-layers', 'canvas-layers');
+  const {scene, resetCamera} = sceneObj;
+
+  let N = 3;
+  let shownLayers = N;
+  let cubeGroup = new THREE.Group();
+  scene.add(cubeGroup);
+
+  // State: meshes organized as array of layers
+  let layerMeshes = []; // layerMeshes[z] = array of meshes
+
+  function rebuildCube(){
+    cubeGroup.children.forEach(c => { c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); }); });
+    cubeGroup.clear();
+    layerMeshes = [];
+
+    const offset = -(N-1)/2;
+    for(let z=0; z<N; z++){
+      const layer = [];
+      const color = LAYER_COLORS[z % LAYER_COLORS.length];
+      for(let y=0; y<N; y++){
+        for(let x=0; x<N; x++){
+          const m = makeCube(color, offset+x, offset+z, offset+y);
+          layer.push(m);
+        }
+      }
+      layerMeshes.push(layer);
+    }
+    applyLayerVisibility();
+  }
+
+  function applyLayerVisibility(){
+    for(let z=0; z<N; z++){
+      layerMeshes[z].forEach(m => {
+        if(z < shownLayers){
+          if(!m.parent) cubeGroup.add(m);
+          m.visible = true;
+          // Animate: pop in
+          m.scale.setScalar(1);
+        } else {
+          m.visible = false;
+        }
+      });
+    }
+    updateStats();
+    updateLayerList();
+  }
+
+  function updateStats(){
+    document.getElementById('layerNv').textContent = N;
+    document.getElementById('layer-stat-one').textContent = `${N} × ${N} = ${N*N} cubes`;
+    document.getElementById('layer-stat-shown').textContent = shownLayers;
+    document.getElementById('layer-stat-total').textContent = `${N*N*shownLayers} = ${N}²×${shownLayers}`;
+    document.getElementById('layer-count-display').textContent = `${shownLayers} of ${N} layers`;
+    document.getElementById('btn-add-layer').disabled = shownLayers >= N;
+    document.getElementById('btn-remove-layer').disabled = shownLayers <= 0;
+  }
+
+  function updateLayerList(){
+    const list = document.getElementById('layer-list');
+    list.innerHTML = '';
+    for(let z=0; z<N; z++){
+      const item = document.createElement('div');
+      item.className = 'layer-item' + (z < shownLayers ? ' active' : '');
+      item.style.opacity = z < shownLayers ? '1' : '0.4';
+      const color = LAYER_COLORS[z % LAYER_COLORS.length];
+      item.innerHTML = `
+        <div class="layer-swatch" style="background:${hexCSS(color)}"></div>
+        <span>Layer ${z+1} — ${N}×${N}=${N*N} cubes</span>
+      `;
+      item.addEventListener('click', () => {
+        shownLayers = z+1;
+        applyLayerVisibility();
+      });
+      list.appendChild(item);
+    }
+  }
+
+  // Slider changes cube size
+  document.getElementById('layerN').addEventListener('input', e => {
+    N = +e.target.value;
+    shownLayers = N;
+    rebuildCube();
+    resetCamera(N*4 + 6);
+  });
+
+  document.getElementById('btn-add-layer').addEventListener('click', () => {
+    if(shownLayers < N){ shownLayers++; applyLayerVisibility(); }
+  });
+  document.getElementById('btn-remove-layer').addEventListener('click', () => {
+    if(shownLayers > 0){ shownLayers--; applyLayerVisibility(); }
+  });
+  document.getElementById('reset-layers-cam').addEventListener('click', () => resetCamera(N*4+6));
+
+  rebuildCube();
+  resetCamera(14);
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+// TAB 2: CONSECUTIVE ODDS
+// ═══════════════════════════════════════════════════════════════════
+(function(){
+  const sceneObj = createScene('c-odds', 'canvas-odds');
+  const {scene, resetCamera} = sceneObj;
+  let N = 3;
+  let cubeGroup = new THREE.Group();
+  scene.add(cubeGroup);
+
+  function rebuild(){
+    cubeGroup.children.forEach(c => {
+      c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
+    });
+    cubeGroup.clear();
+
+    const odds = getOddsForN(N);
+    const offset = -(N-1)/2;
+    const total = N*N*N;
+
+    // Build cumulative boundaries
+    const boundaries = [0];
+    let cum = 0;
+    for(const o of odds){ cum += o; boundaries.push(cum); }
+
+    // Fill cells in scan order (y=bottom to top, then z, then x)
+    let cellIdx = 0;
+    let colorForCell = new Array(total);
+    for(let y=0; y<N; y++){
+      for(let z=0; z<N; z++){
+        for(let x=0; x<N; x++){
+          // Determine group
+          let group = 0;
+          for(let g=0; g<odds.length; g++){
+            if(cellIdx < boundaries[g+1]){ group = g; break; }
+          }
+          colorForCell[cellIdx] = ODDS_COLORS[group % ODDS_COLORS.length];
+          cellIdx++;
+        }
+      }
+    }
+
+    // Render
+    cellIdx = 0;
+    for(let y=0; y<N; y++){
+      for(let z=0; z<N; z++){
+        for(let x=0; x<N; x++){
+          const m = makeCube(colorForCell[cellIdx], offset+x, offset+y, offset+z);
+          cubeGroup.add(m);
+          cellIdx++;
+        }
+      }
+    }
+
+    // Update panel
+    document.getElementById('oddsNv').textContent = N;
+    document.getElementById('odds-identity').textContent =
+      odds.join(' + ') + ' = ' + N**3 + ' = ' + N + '³';
+    const midIdx = Math.floor((N-1)/2);
+    const isOddN = N % 2 === 1;
+    const midDisplay = isOddN
+      ? odds[midIdx] + ' = ' + N + '² = n²'
+      : '(' + odds[midIdx] + '+' + odds[midIdx+1] + ')÷2 = ' + N + '² = n²';
+    document.getElementById('odds-middle').textContent = midDisplay;
+
+    const legend = document.getElementById('odds-legend');
+    legend.innerHTML = '';
+    odds.forEach((o,i) => {
+      const color = ODDS_COLORS[i % ODDS_COLORS.length];
+      const isMid = isOddN ? i === midIdx : (i === midIdx || i === midIdx+1);
+      const div = document.createElement('div');
+      div.className = 'odds-item';
+      div.style.borderColor = isMid ? hexCSS(color) : '#d8d4cc';
+      div.innerHTML = `
+        <div class="odds-swatch" style="background:${hexCSS(color)}"></div>
+        <span class="odds-num" style="color:${hexCSS(color)}">${o}</span>
+        <span class="odds-val">${isMid ? '← middle = n²' : ''}</span>
+      `;
+      legend.appendChild(div);
+    });
+
+    resetCamera(N*4+6);
+  }
+
+  document.getElementById('oddsN').addEventListener('input', e => {
+    N = +e.target.value;
+    rebuild();
+  });
+  document.getElementById('reset-odds-cam').addEventListener('click', () => resetCamera(N*4+6));
+
+  rebuild();
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+// TAB 3: TAXICAB 1729
+// ═══════════════════════════════════════════════════════════════════
+(function(){
+  const sceneObj = createScene('c-taxi', 'canvas-taxi');
+  const {scene, resetCamera} = sceneObj;
+  let way = 1; // 1 = 1³+12³, 2 = 9³+10³
+
+  let cubeGroup = new THREE.Group();
+  scene.add(cubeGroup);
+
+  function rebuildTaxi(){
+    cubeGroup.children.forEach(c => {
+      c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
+    });
+    cubeGroup.clear();
+
+    let a, b;
+    if(way === 1){ a=1; b=12; }
+    else          { a=9;  b=10; }
+
+    // Scale down: we can't show 12³=1728 individual cubes.
+    // Instead show two symbolic cube outlines / solid blocks of scale a and b
+    // Use solid colored cube of side a and side b, placed side by side
+
+    const colorA = 0x2c5f9e;
+    const colorB = 0xc0392b;
+
+    // Cube A: centered at (-b/2 - a/2 - 1, 0, 0)
+    // Cube B: centered at (a/2 + b/2 + 1, 0, 0)
+    // Make them touch in the middle with a gap
+
+    function solidCube(size, color, cx, cy, cz){
+      // Semi-transparent solid + wireframe
+      const geo = new THREE.BoxGeometry(size, size, size);
+      const mat = new THREE.MeshLambertMaterial({color, transparent:true, opacity:0.75});
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(cx, cy, cz);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      // Wireframe
+      const wGeo = new THREE.EdgesGeometry(geo);
+      const wMat = new THREE.LineBasicMaterial({color, transparent:true, opacity:0.6});
+      const wire = new THREE.LineSegments(wGeo, wMat);
+      mesh.add(wire);
+
+      // Internal unit cube grid lines (for realism, small count only)
+      if(size <= 6){
+        const lineMat = new THREE.LineBasicMaterial({color:0x000000, transparent:true, opacity:0.07});
+        for(let i=0; i<size; i++){
+          for(let j=0; j<size; j++){
+            // Vertical lines along z
+            const pg = new THREE.BufferGeometry().setFromPoints([
+              new THREE.Vector3(-size/2+i+0.5, -size/2, -size/2+j+0.5 - size),
+              new THREE.Vector3(-size/2+i+0.5, size/2, -size/2+j+0.5 - size),
+            ]);
+          }
+        }
+      }
+      return mesh;
+    }
+
+    const gap = 1.2;
+    const totalWidth = a + b + gap*2;
+    const leftCX  = -(gap + b/2 + a/2);  // cube A left
+    const rightCX =  (gap + a/2 + b/2);  // cube B right
+
+    const meshA = solidCube(a, colorA, leftCX/2 - a/2, a/2 - (a+b)/4, 0);
+    const meshB = solidCube(b, colorB, rightCX/2 + b/2, b/2 - (a+b)/4, 0);
+
+    // Actually: place them centered nicely
+    // Cube A: left side, Cube B: right side
+    const sepA = -(gap/2 + a/2 + b/4);
+    const sepB =  (gap/2 + b/2 + a/4);
+
+    // Simpler: just center each cube symmetrically
+    const geoA = new THREE.BoxGeometry(a, a, a);
+    const matA = new THREE.MeshLambertMaterial({color:colorA, transparent:true, opacity:0.8});
+    const mA = new THREE.Mesh(geoA, matA);
+    mA.position.set(-(b*0.5 + gap), a*0.5 - (Math.max(a,b)/2), 0);
+    mA.castShadow = true; mA.receiveShadow = true;
+    const eA = new THREE.LineSegments(new THREE.EdgesGeometry(geoA),
+      new THREE.LineBasicMaterial({color:colorA, opacity:0.8, transparent:true}));
+    mA.add(eA);
+    cubeGroup.add(mA);
+
+    const geoB = new THREE.BoxGeometry(b, b, b);
+    const matB = new THREE.MeshLambertMaterial({color:colorB, transparent:true, opacity:0.8});
+    const mB = new THREE.Mesh(geoB, matB);
+    mB.position.set(a*0.5 + gap, b*0.5 - (Math.max(a,b)/2), 0);
+    mB.castShadow = true; mB.receiveShadow = true;
+    const eB = new THREE.LineSegments(new THREE.EdgesGeometry(geoB),
+      new THREE.LineBasicMaterial({color:colorB, opacity:0.8, transparent:true}));
+    mB.add(eB);
+    cubeGroup.add(mB);
+
+    // Update button and cards
+    const btn = document.getElementById('taxi-way-btn');
+    const w1 = document.getElementById('taxi-way1-card');
+    const w2 = document.getElementById('taxi-way2-card');
+    if(way===1){
+      btn.textContent = 'Show way 2: 9³ + 10³';
+      w1.style.borderColor = '#9ab4dc'; w1.style.background = '#2c5f9e10';
+      w2.style.borderColor = '#d8d4cc'; w2.style.background = '';
+    } else {
+      btn.textContent = 'Show way 1: 1³ + 12³';
+      w2.style.borderColor = '#9ab4dc'; w2.style.background = '#2c5f9e10';
+      w1.style.borderColor = '#d8d4cc'; w1.style.background = '';
+    }
+
+    const maxSide = Math.max(a,b);
+    resetCamera(maxSide*1.5 + 10);
+  }
+
+  document.getElementById('taxi-way-btn').addEventListener('click', () => {
+    way = way===1 ? 2 : 1;
+    rebuildTaxi();
+  });
+  document.getElementById('reset-taxi-cam').addEventListener('click', () => {
+    const a = way===1?1:9, b = way===1?12:10;
+    resetCamera(Math.max(a,b)*1.5+10);
+  });
+
+  rebuildTaxi();
+})();
+
+// ═══════════════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════════════
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    tab.classList.add('active');
+    const tid = tab.dataset.tab;
+    document.getElementById('view-'+tid).classList.add('active');
+  });
+});
 </script>
 </body>
 </html>
