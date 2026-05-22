@@ -5,136 +5,326 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>3D Cube Explorer — Ganita Prakash Grade 8</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede8;--border:#d8d4cc;
-  --text:#1a1814;--text2:#5a5650;--text3:#9a958e;
-  --blue:#2c5f9e;--red:#c0392b;--green:#1a7a4a;--orange:#e08020;
-  --purple:#7a5cb0;
-  --font:'DM Sans',-apple-system,sans-serif;
-  --mono:'DM Mono',ui-monospace,monospace;
+  /* Warm editorial palette */
+  --paper:  #faf8f4;
+  --paper2: #f3f0ea;
+  --paper3: #e8e3d8;
+  --ink:    #1c1a16;
+  --ink2:   #4a4640;
+  --ink3:   #8a8580;
+  --rule:   #d4cfc5;
+
+  --teal:   #1d6a72;
+  --teal2:  #2a8a94;
+  --teal-bg:#e8f4f5;
+  --rust:   #b84a2a;
+  --rust2:  #d45c36;
+  --rust-bg:#fdf0ec;
+  --gold:   #c08030;
+  --gold-bg:#fdf5e8;
+  --sage:   #3a6a48;
+  --sage-bg:#eaf2ec;
+
+  --font:  'DM Sans', sans-serif;
+  --serif: 'Lora', Georgia, serif;
+  --mono:  'DM Mono', ui-monospace, monospace;
+
+  --radius: 10px;
+  --shadow: 0 2px 12px rgba(28,26,22,.08);
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;
-  -webkit-font-smoothing:antialiased;padding:24px 16px;line-height:1.5}
+
+body{
+  font-family:var(--font);
+  background:var(--paper);
+  color:var(--ink);
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  padding:32px 20px 60px;
+  line-height:1.6;
+  /* Subtle paper texture via repeating gradient */
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(192,128,48,.04) 0, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(29,106,114,.04) 0, transparent 50%);
+}
+
 .app{max-width:960px;margin:0 auto}
 
-.head{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.head-ic{width:42px;height:42px;border-radius:10px;background:var(--surface2);
-  border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-weight:600;color:var(--text2);font-size:16px;flex-shrink:0}
-.lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text3);margin-bottom:2px}
-.title{font-size:22px;font-weight:700;color:var(--text);line-height:1.2}
+/* ══ HEADER ═══════════════════════════════════════════════════ */
+.header{margin-bottom:28px;border-bottom:1.5px solid var(--rule);padding-bottom:20px}
+.chapter-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--paper2);border:1.5px solid var(--rule);
+  border-radius:20px;padding:4px 14px 4px 10px;
+  font-size:11px;font-weight:600;letter-spacing:.6px;
+  text-transform:uppercase;color:var(--ink3);margin-bottom:12px
+}
+.badge-num{
+  width:22px;height:22px;border-radius:50%;
+  background:var(--teal);color:#fff;
+  font-size:12px;font-weight:700;font-family:var(--mono);
+  display:flex;align-items:center;justify-content:center
+}
+h1{
+  font-family:var(--serif);font-size:30px;font-weight:700;
+  color:var(--ink);letter-spacing:-.3px;line-height:1.2
+}
+.header-sub{font-size:14px;color:var(--ink2);margin-top:6px;max-width:520px}
 
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:12px;
-  padding:22px;margin-bottom:16px}
+/* ══ CARD ══════════════════════════════════════════════════════ */
+.card{
+  background:var(--paper);
+  border:1.5px solid var(--rule);
+  border-radius:14px;
+  padding:24px;
+  margin-bottom:20px;
+  box-shadow:var(--shadow)
+}
 
-/* Tabs */
-.tabs{display:flex;gap:4px;background:var(--surface2);border:1.5px solid var(--border);
-  border-radius:10px;padding:4px;margin-bottom:20px}
-.tab{flex:1;padding:9px 8px;border:none;background:transparent;border-radius:7px;
-  font-family:var(--font);font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;
-  transition:all .15s;text-align:center}
-.tab.active{background:var(--surface);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.08);
-  border:1.5px solid var(--border)}
-
-/* Main 3D layout */
-.scene-layout{display:grid;grid-template-columns:1fr 280px;gap:16px;align-items:start}
-@media(max-width:720px){.scene-layout{grid-template-columns:1fr}}
-
-/* Canvas container */
-.canvas-wrap{position:relative;background:var(--surface2);border:1.5px solid var(--border);
-  border-radius:10px;overflow:hidden;height:420px;touch-action:none;cursor:grab}
-.canvas-wrap:active{cursor:grabbing}
-.canvas-wrap canvas{display:block;width:100%!important;height:100%!important}
-.hint-label{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
-  font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;
-  letter-spacing:.5px;pointer-events:none;background:rgba(245,244,240,.8);
-  padding:4px 10px;border-radius:6px;white-space:nowrap}
-
-/* Side panel */
-.side-panel{display:flex;flex-direction:column;gap:12px}
-.stat-card{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;
-  padding:12px 14px}
-.stat-card.hl{background:#2c5f9e10;border-color:#9ab4dc}
-.sc-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;
-  color:var(--text3);margin-bottom:3px}
-.sc-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);line-height:1.1}
-.sc-val.blue{color:var(--blue)}
-.sc-val.sm{font-size:15px}
-
-/* Controls */
-.ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
-.ctrl-row label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;
-  letter-spacing:.4px;white-space:nowrap}
-.ctrl-row input[type=range]{flex:1;accent-color:var(--blue);height:5px}
-.ctrl-row .nv{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--blue);
-  min-width:28px;text-align:right}
-
-/* Layer stepper buttons */
-.layer-btns{display:flex;gap:6px;margin-bottom:12px;align-items:center}
-.layer-btn{width:38px;height:38px;border-radius:8px;border:1.5px solid var(--border);
-  background:var(--surface);font-family:var(--mono);font-size:20px;font-weight:700;
-  color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;
-  transition:all .12s;user-select:none;line-height:1}
-.layer-btn:hover{border-color:var(--text3);background:var(--surface2)}
-.layer-btn:active{transform:scale(.94)}
-.layer-btn.add{background:var(--blue);border-color:var(--blue);color:#fff}
-.layer-btn.add:hover{background:#234d83;border-color:#234d83}
-.layer-count{font-family:var(--mono);font-size:16px;font-weight:700;
-  background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;
-  padding:6px 14px;text-align:center;flex:1}
-
-/* Layer list */
-.layer-list{display:flex;flex-direction:column;gap:4px;max-height:160px;overflow-y:auto}
-.layer-item{display:flex;align-items:center;gap:8px;padding:7px 10px;
-  background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;
-  font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);
-  cursor:pointer;transition:all .12s}
-.layer-item:hover{border-color:var(--text3)}
-.layer-item.active{background:var(--surface);border-color:var(--blue)}
-.layer-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
-.layer-remove{margin-left:auto;width:18px;height:18px;border-radius:4px;
-  background:transparent;border:none;color:var(--text3);cursor:pointer;
-  font-size:14px;display:flex;align-items:center;justify-content:center;
-  line-height:1;transition:all .12s}
-.layer-remove:hover{background:#c0392b20;color:var(--red)}
-
-/* Odds view */
-.odds-legend{display:flex;flex-direction:column;gap:5px}
-.odds-item{display:flex;align-items:center;gap:8px;padding:7px 10px;
-  background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;
-  font-family:var(--mono);font-size:12px}
-.odds-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0}
-.odds-num{font-weight:700;flex:1}
-.odds-val{color:var(--text3)}
-
-/* Insight */
-.insight{background:#fff8f0;border:1px solid #f0d8c0;border-left:3px solid var(--orange);
-  border-radius:0 8px 8px 0;padding:11px 14px;font-size:13px;color:#6b4400;line-height:1.65;
-  margin-top:12px}
-.insight strong{color:#4a2e00}
-
-/* Reset orbit btn */
-.orbit-btn{padding:7px 12px;border-radius:7px;background:var(--surface);
-  border:1.5px solid var(--border);font-family:var(--font);font-size:12px;
-  font-weight:600;color:var(--text2);cursor:pointer;transition:all .12s;
-  text-align:center}
-.orbit-btn:hover{border-color:var(--text3);color:var(--text)}
+/* ══ TABS ══════════════════════════════════════════════════════ */
+.tabs{
+  display:flex;gap:3px;
+  background:var(--paper2);
+  border:1.5px solid var(--rule);
+  border-radius:12px;padding:4px;
+  margin-bottom:24px
+}
+.tab{
+  flex:1;padding:9px 10px;
+  border:none;background:transparent;
+  border-radius:9px;
+  font-family:var(--font);font-size:13px;font-weight:600;
+  color:var(--ink3);cursor:pointer;transition:all .18s;text-align:center
+}
+.tab:hover{color:var(--ink2)}
+.tab.active{
+  background:#fff;color:var(--ink);
+  box-shadow:0 1px 4px rgba(28,26,22,.1);
+  border:1.5px solid var(--rule)
+}
 
 .view{display:none}
 .view.active{display:block}
+
+/* ══ CONCEPT BANNER ═══════════════════════════════════════════ */
+.concept{
+  background:var(--gold-bg);
+  border-left:3px solid var(--gold);
+  border-radius:0 8px 8px 0;
+  padding:11px 16px;
+  margin-bottom:20px;
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:14px;
+  color:#4a3010;
+  line-height:1.65
+}
+.concept strong{font-style:normal;font-weight:700;color:#3a2008}
+
+/* ══ SCENE LAYOUT ══════════════════════════════════════════════ */
+.scene-layout{
+  display:grid;
+  grid-template-columns:1fr 264px;
+  gap:18px;align-items:start
+}
+@media(max-width:700px){.scene-layout{grid-template-columns:1fr}}
+
+/* Canvas */
+.canvas-wrap{
+  position:relative;
+  background:var(--paper2);
+  border:1.5px solid var(--rule);
+  border-radius:12px;
+  overflow:hidden;
+  height:400px;
+  touch-action:none;
+  cursor:grab
+}
+.canvas-wrap:active{cursor:grabbing}
+.canvas-wrap canvas{display:block;width:100%!important;height:100%!important}
+.canvas-hint{
+  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;
+  letter-spacing:.5px;background:rgba(250,248,244,.85);
+  padding:4px 12px;border-radius:20px;white-space:nowrap;pointer-events:none;
+  border:1px solid var(--rule)
+}
+
+/* ══ SIDE PANEL ════════════════════════════════════════════════ */
+.side{display:flex;flex-direction:column;gap:10px}
+
+.stat{
+  background:#fff;border:1.5px solid var(--rule);
+  border-radius:var(--radius);padding:12px 14px
+}
+.stat.accent-teal{background:var(--teal-bg);border-color:var(--teal2)}
+.stat.accent-rust{background:var(--rust-bg);border-color:var(--rust2)}
+.stat.accent-gold{background:var(--gold-bg);border-color:var(--gold)}
+.stat-lbl{
+  font-size:9px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--ink3);margin-bottom:4px
+}
+.stat-val{
+  font-family:var(--mono);font-size:20px;font-weight:600;
+  color:var(--ink);line-height:1.15
+}
+.stat.accent-teal .stat-val{color:var(--teal)}
+.stat.accent-rust .stat-val{color:var(--rust)}
+.stat.accent-gold .stat-val{color:var(--gold)}
+.stat-sub{font-size:11px;color:var(--ink3);margin-top:3px;font-family:var(--mono)}
+
+/* Slider */
+.ctrl{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ctrl-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);white-space:nowrap}
+.ctrl input[type=range]{flex:1;accent-color:var(--teal);height:5px;cursor:pointer}
+.ctrl-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--teal);min-width:28px;text-align:right}
+
+/* Layer buttons */
+.layer-controls{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.lbtn{
+  width:36px;height:36px;border-radius:8px;
+  border:1.5px solid var(--rule);background:#fff;
+  font-family:var(--mono);font-size:20px;font-weight:700;
+  color:var(--ink2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .14s;user-select:none;line-height:1
+}
+.lbtn:hover{border-color:var(--ink3)}
+.lbtn:active{transform:scale(.93)}
+.lbtn.add-btn{background:var(--teal);border-color:var(--teal);color:#fff}
+.lbtn.add-btn:hover{background:#155a62}
+.lbtn:disabled{opacity:.3;cursor:default;transform:none}
+.layer-count-display{
+  flex:1;text-align:center;
+  font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink2);
+  background:var(--paper2);border:1.5px solid var(--rule);border-radius:8px;padding:6px
+}
+
+/* Layer list */
+.layer-list{display:flex;flex-direction:column;gap:3px;max-height:150px;overflow-y:auto}
+.layer-item{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;
+  background:var(--paper2);border:1.5px solid var(--rule);
+  border-radius:8px;font-family:var(--mono);font-size:11.5px;
+  font-weight:600;color:var(--ink2);cursor:pointer;transition:all .12s
+}
+.layer-item:hover{border-color:var(--ink3);background:#fff}
+.layer-item.active{background:#fff;border-color:var(--teal);color:var(--ink)}
+.layer-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+
+/* Orbit reset */
+.reset-cam{
+  padding:7px 12px;border:1.5px solid var(--rule);border-radius:8px;
+  background:#fff;font-family:var(--font);font-size:12px;
+  font-weight:600;color:var(--ink3);cursor:pointer;transition:all .12s;
+  text-align:center
+}
+.reset-cam:hover{border-color:var(--ink3);color:var(--ink)}
+
+/* Odds legend items */
+.odds-list{display:flex;flex-direction:column;gap:4px}
+.odds-row{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 10px;
+  background:var(--paper2);border:1.5px solid var(--rule);
+  border-radius:8px;cursor:pointer;transition:all .14s
+}
+.odds-row:hover{background:#fff;border-color:var(--ink3)}
+.odds-row.highlighted{background:#fff;border-width:2px}
+.odds-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
+.odds-num{font-family:var(--mono);font-size:13px;font-weight:700;flex:1}
+.odds-tag{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold)
+}
+
+/* Odds overlay — buttons inside the canvas */
+#odds-overlay{
+  position:absolute;
+  top:12px;left:12px;
+  display:flex;flex-direction:column;gap:5px;
+  z-index:10
+}
+.odds-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 11px;
+  border-radius:20px;
+  border:2px solid;
+  font-family:var(--mono);font-size:12px;font-weight:700;
+  cursor:pointer;
+  pointer-events:all;
+  transition:all .15s;
+  white-space:nowrap;
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+  background:rgba(250,248,244,0.88);
+  box-shadow:0 1px 6px rgba(28,26,22,.12)
+}
+.odds-btn:hover{
+  background:rgba(255,255,255,0.97);
+  transform:translateX(3px);
+  box-shadow:0 2px 10px rgba(28,26,22,.18)
+}
+.odds-btn.active-odd{
+  background:rgba(255,255,255,0.97);
+  transform:translateX(4px);
+  box-shadow:0 2px 12px rgba(28,26,22,.22)
+}
+.odds-btn-swatch{
+  width:10px;height:10px;border-radius:50%;flex-shrink:0
+}
+.odds-btn-num{color:var(--ink)}
+.odds-btn-tag{
+  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
+  padding:1px 6px;border-radius:8px;background:var(--gold-bg);color:var(--gold)
+}
+
+/* Taxi panel */
+.taxi-way-btn{
+  display:flex;justify-content:center;margin-top:12px
+}
+.tbtn{
+  padding:9px 22px;border-radius:9px;
+  background:var(--teal);border:none;color:#fff;
+  font-family:var(--font);font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .14s;letter-spacing:.2px
+}
+.tbtn:hover{background:#155a62}
+
+/* Taxi decomposition display */
+.taxi-decomp{
+  display:flex;flex-direction:column;gap:6px;
+  padding:12px 14px;background:var(--paper2);border:1.5px solid var(--rule);
+  border-radius:var(--radius)
+}
+.taxi-way-row{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:8px 10px;border:1.5px solid var(--rule);
+  border-radius:8px;background:#fff;
+  font-family:var(--mono);font-size:12.5px;font-weight:600;
+  cursor:pointer;transition:all .14s
+}
+.taxi-way-row.active-way{border-color:var(--teal);background:var(--teal-bg)}
+.taxi-way-row:hover{border-color:var(--ink3)}
+.tw-label{color:var(--ink3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+.tw-eq{color:var(--ink);font-size:11px}
+.tw-check{color:var(--sage);font-weight:700}
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="head">
-    <div class="head-ic">1</div>
-    <div>
-      <div class="lbl">Chapter 1 · A Square and A Cube</div>
-      <div class="title">3D Cube Explorer</div>
+
+  <div class="header">
+    <div class="chapter-badge">
+      <div class="badge-num">1</div>
+      Chapter 1 · A Square and A Cube
     </div>
+    <h1>3D Cube Explorer</h1>
+    <p class="header-sub">Build cubes layer by layer, discover how consecutive odd numbers sum to every cube, and explore Ramanujan's famous taxicab number.</p>
   </div>
 
   <div class="card">
@@ -144,609 +334,679 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:1
       <button class="tab" data-tab="taxi">Taxicab 1729</button>
     </div>
 
-    <!-- LAYERS TAB -->
+    <!-- ══ LAYERS TAB ══ -->
     <div class="view active" id="view-layers">
-      <div class="ctrl-row" style="margin-bottom:12px">
-        <label>Cube size n</label>
+      <div class="concept">
+        <strong>The key idea:</strong> n³ simply means <em>n layers of n×n</em>. Add layers one at a time — each layer adds exactly n² unit cubes, so after n layers you have n × n² = n³ cubes total.
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-lbl">Cube size n</span>
         <input type="range" id="layerN" min="1" max="6" value="3">
-        <span class="nv" id="layerNv">3</span>
+        <span class="ctrl-val" id="layerNv">3</span>
       </div>
       <div class="scene-layout">
         <div>
           <div class="canvas-wrap" id="canvas-layers">
             <canvas id="c-layers"></canvas>
-            <div class="hint-label">Drag to rotate · Scroll to zoom</div>
+            <div class="canvas-hint">Drag to rotate · Scroll to zoom</div>
           </div>
-          <div class="layer-btns" style="margin-top:12px">
-            <button class="layer-btn" id="btn-remove-layer" title="Remove top layer">−</button>
-            <div class="layer-count" id="layer-count-display">3 of 3 layers</div>
-            <button class="layer-btn add" id="btn-add-layer" title="Add a layer">+</button>
+          <div class="layer-controls" style="margin-top:12px">
+            <button class="lbtn" id="btn-remove-layer">−</button>
+            <div class="layer-count-display" id="layer-count-display">3 of 3 layers</div>
+            <button class="lbtn add-btn" id="btn-add-layer">+</button>
           </div>
         </div>
-        <div class="side-panel">
-          <div class="stat-card">
-            <div class="sc-lbl">One layer</div>
-            <div class="sc-val sm" id="layer-stat-one">3 × 3 = 9 cubes</div>
+        <div class="side">
+          <div class="stat">
+            <div class="stat-lbl">Each layer is</div>
+            <div class="stat-val" id="layer-stat-one">3 × 3 = 9</div>
+            <div class="stat-sub">unit cubes</div>
           </div>
-          <div class="stat-card">
-            <div class="sc-lbl">Layers shown</div>
-            <div class="sc-val" id="layer-stat-shown">3</div>
+          <div class="stat">
+            <div class="stat-lbl">Layers shown</div>
+            <div class="stat-val" id="layer-stat-shown">3</div>
           </div>
-          <div class="stat-card hl">
-            <div class="sc-lbl">Total unit cubes</div>
-            <div class="sc-val blue" id="layer-stat-total">27 = 3³</div>
+          <div class="stat accent-teal">
+            <div class="stat-lbl">Total cubes so far</div>
+            <div class="stat-val" id="layer-stat-total">27</div>
+            <div class="stat-sub" id="layer-stat-formula">= 3 × 9 = 3³</div>
           </div>
-          <div class="sc-lbl" style="margin-top:4px;margin-bottom:4px">Layers</div>
+          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-top:2px">Click a layer to show up to it</div>
           <div class="layer-list" id="layer-list"></div>
-          <button class="orbit-btn" id="reset-layers-cam">Reset view</button>
+          <button class="reset-cam" id="reset-layers-cam">Reset view</button>
         </div>
       </div>
     </div>
 
-    <!-- ODDS TAB -->
+    <!-- ══ ODDS TAB ══ -->
     <div class="view" id="view-odds">
-      <div class="ctrl-row" style="margin-bottom:12px">
-        <label>Cube n</label>
+      <div class="concept">
+        <strong>The surprising pattern:</strong> Every cube n³ equals the sum of exactly n consecutive odd numbers. The <em>middle</em> one is always n². Tap any coloured button on the canvas to highlight that group of cells.
+      </div>
+      <div class="ctrl">
+        <span class="ctrl-lbl">Cube n</span>
         <input type="range" id="oddsN" min="1" max="6" value="3">
-        <span class="nv" id="oddsNv">3</span>
+        <span class="ctrl-val" id="oddsNv" style="color:var(--rust)">3</span>
       </div>
       <div class="scene-layout">
         <div>
-          <div class="canvas-wrap" id="canvas-odds">
-            <canvas id="c-odds"></canvas>
-            <div class="hint-label">Drag to rotate · Colors show each odd</div>
+          <div style="position:relative">
+            <div class="canvas-wrap" id="canvas-odds">
+              <canvas id="c-odds"></canvas>
+              <div class="canvas-hint">Drag to rotate</div>
+            </div>
+            <div id="odds-overlay"></div>
           </div>
         </div>
-        <div class="side-panel">
-          <div class="stat-card hl">
-            <div class="sc-lbl">Identity</div>
-            <div class="sc-val sm" id="odds-identity">7 + 9 + 11 = 27 = 3³</div>
+        <div class="side">
+          <div class="stat accent-rust">
+            <div class="stat-lbl">n³ as a sum</div>
+            <div class="stat-val" id="odds-identity" style="font-size:14px;line-height:1.4">7 + 9 + 11 = 27 = 3³</div>
           </div>
-          <div class="stat-card">
-            <div class="sc-lbl">Middle number</div>
-            <div class="sc-val blue" id="odds-middle">9 = 3² = n²</div>
+          <div class="stat accent-gold">
+            <div class="stat-lbl">Middle odd = n²</div>
+            <div class="stat-val" id="odds-middle">9 = 3²</div>
+            <div class="stat-sub">The central odd is always the square</div>
           </div>
-          <div class="sc-lbl" style="margin-top:4px;margin-bottom:6px">Each odd number</div>
-          <div class="odds-legend" id="odds-legend"></div>
-          <button class="orbit-btn" id="reset-odds-cam" style="margin-top:4px">Reset view</button>
-          <div class="insight">
-            <strong>The middle odd is always n².</strong> The n consecutive odds form colored bands through the cube — adding them all gives exactly n³.
-          </div>
+          <button class="reset-cam" id="reset-odds-cam">Reset view</button>
         </div>
       </div>
     </div>
 
-    <!-- TAXI TAB -->
+    <!-- ══ TAXI TAB ══ -->
     <div class="view" id="view-taxi">
-      <div style="margin-bottom:12px;font-size:14px;color:var(--text2);line-height:1.65">
-        Hardy arrived in taxi <strong style="color:var(--text)">#1729</strong>. "Rather a dull number," he said. Ramanujan replied instantly: <em>"No — it is the smallest number expressible as the sum of two cubes in two different ways."</em>
+      <div class="concept">
+        <strong>1729 — the Hardy–Ramanujan number:</strong> Hardy arrived in a taxi numbered 1729 and called it "dull." Ramanujan instantly replied: <em>"It is the smallest number expressible as the sum of two cubes in two different ways."</em> Toggle between the two ways below — notice that both pairs of cubes have completely different sizes, yet both sum to exactly 1729.
       </div>
       <div class="scene-layout">
         <div>
           <div class="canvas-wrap" id="canvas-taxi">
             <canvas id="c-taxi"></canvas>
-            <div class="hint-label" id="taxi-hint">Drag to rotate · Toggle: 1³+12³ vs 9³+10³</div>
+            <div class="canvas-hint" id="taxi-hint">Drag to rotate · Labels show cube dimensions</div>
           </div>
-          <div class="layer-btns" style="margin-top:12px;justify-content:center">
-            <button class="layer-btn" id="taxi-way-btn" style="width:auto;padding:0 18px;font-size:14px;font-family:var(--font)">
-              Show way 2: 9³ + 10³
-            </button>
+          <div class="taxi-way-btn">
+            <button class="tbtn" id="taxi-way-btn">Show way 2: 9³ + 10³</button>
           </div>
         </div>
-        <div class="side-panel">
-          <div class="stat-card">
-            <div class="sc-lbl">The taxicab number</div>
-            <div class="sc-val blue">1729</div>
+        <div class="side">
+          <div class="stat accent-teal">
+            <div class="stat-lbl">The taxicab number</div>
+            <div class="stat-val">1729</div>
+            <div class="stat-sub">= 12³ + 1³ = 10³ + 9³</div>
           </div>
-          <div class="stat-card" id="taxi-way1-card">
-            <div class="sc-lbl">Way 1</div>
-            <div class="sc-val sm">1³ + 12³</div>
-            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:4px">1 + 1728 = 1729 ✓</div>
+          <div class="taxi-decomp">
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:4px">Both decompositions</div>
+            <div class="taxi-way-row active-way" id="taxi-row-1" data-way="1">
+              <span class="tw-label">Way 1</span>
+              <span>1³ + 12³</span>
+              <span class="tw-eq">= 1 + 1,728</span>
+              <span class="tw-check">= 1729 ✓</span>
+            </div>
+            <div class="taxi-way-row" id="taxi-row-2" data-way="2">
+              <span class="tw-label">Way 2</span>
+              <span>9³ + 10³</span>
+              <span class="tw-eq">= 729 + 1,000</span>
+              <span class="tw-check">= 1729 ✓</span>
+            </div>
           </div>
-          <div class="stat-card" id="taxi-way2-card">
-            <div class="sc-lbl">Way 2</div>
-            <div class="sc-val sm">9³ + 10³</div>
-            <div style="font-family:var(--mono);font-size:12px;color:var(--text2);margin-top:4px">729 + 1000 = 1729 ✓</div>
+          <div class="stat">
+            <div class="stat-lbl">Why remarkable</div>
+            <div style="font-size:12.5px;color:var(--ink2);line-height:1.55">Most numbers can't be written as a sum of two cubes <em>even once</em>. 1729 does it twice — and it's the <strong>smallest</strong> number with this property.</div>
           </div>
-          <button class="orbit-btn" id="reset-taxi-cam">Reset view</button>
-          <div class="insight">
-            <strong>Why remarkable?</strong> Most numbers can't even be written as one sum of two cubes. Finding a number with two different ways is exceedingly rare — 1729 is the very smallest.
-          </div>
+          <button class="reset-cam" id="reset-taxi-cam">Reset view</button>
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// COLOR PALETTE
+// PALETTE (matching CSS vars)
 // ═══════════════════════════════════════════════════════════════════
-const LAYER_COLORS = [
-  0x2c5f9e, // blue
-  0xc0392b, // red
-  0x1a7a4a, // green
-  0xe08020, // orange
-  0x7a5cb0, // purple
-  0x0891b2, // teal
-];
+const PAL = {
+  teal:   0x1d6a72, teal2: 0x2a8a94,
+  rust:   0xb84a2a, rust2: 0xd45c36,
+  gold:   0xc08030,
+  sage:   0x3a6a48,
+  violet: 0x6a4a90,
+  ocean:  0x2a5a8a,
+};
 
-const ODDS_COLORS = [
-  0x2c5f9e,
-  0xc0392b,
-  0x1a7a4a,
-  0xe08020,
-  0x7a5cb0,
-  0x0891b2,
-];
+const LAYER_COLS = [PAL.teal, PAL.rust, PAL.gold, PAL.sage, PAL.violet, PAL.ocean];
+const ODDS_COLS  = [PAL.teal, PAL.rust, PAL.gold, PAL.sage, PAL.violet, PAL.ocean];
 
-function hexCSS(hex){return '#'+hex.toString(16).padStart(6,'0')}
+function hexCSS(h){ return '#'+h.toString(16).padStart(6,'0') }
 
 // ═══════════════════════════════════════════════════════════════════
-// SHARED THREE.JS SCENE BUILDER
+// SCENE FACTORY
 // ═══════════════════════════════════════════════════════════════════
-function createScene(canvasId, wrapId){
-  const canvas = document.getElementById(canvasId);
+function makeScene(canvasId, wrapId, bgColor=0xf3f0ea){
+  const cvs = document.getElementById(canvasId);
   const wrap = document.getElementById(wrapId);
-  const W = wrap.clientWidth, H = wrap.clientHeight;
 
-  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
-  renderer.setSize(W, H);
+  const renderer = new THREE.WebGLRenderer({canvas:cvs, antialias:true, alpha:false});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf0ede8);
+  scene.background = new THREE.Color(bgColor);
+  // Subtle fog for depth
+  scene.fog = new THREE.Fog(bgColor, 35, 80);
 
-  const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 200);
-  camera.position.set(10, 10, 10);
-  camera.lookAt(0, 0, 0);
+  const cam = new THREE.PerspectiveCamera(42, wrap.clientWidth/wrap.clientHeight, .1, 200);
 
-  // Lights
-  const ambient = new THREE.AmbientLight(0xffffff, 0.55);
-  scene.add(ambient);
-  const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-  dirLight.position.set(8, 14, 10);
-  dirLight.castShadow = true;
-  dirLight.shadow.mapSize.set(1024,1024);
-  scene.add(dirLight);
-  const fillLight = new THREE.DirectionalLight(0xc8d8f0, 0.3);
-  fillLight.position.set(-6,-4,-8);
-  scene.add(fillLight);
+  // Lights — warm editorial
+  scene.add(new THREE.AmbientLight(0xfdf4e8, 0.6));
+  const sun = new THREE.DirectionalLight(0xfff8f0, 1.0);
+  sun.position.set(10, 16, 12); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024,1024);
+  scene.add(sun);
+  const fill = new THREE.DirectionalLight(0xd0e8f0, 0.25);
+  fill.position.set(-8, -4, -10);
+  scene.add(fill);
+  const rim = new THREE.DirectionalLight(0xf8e8d0, 0.15);
+  rim.position.set(0, -10, 8);
+  scene.add(rim);
 
-  // Orbit state
-  let orbit = {theta: 0.7, phi: 0.6, dist: 14, isDragging:false, lastX:0, lastY:0};
-
-  function updateCamera(){
-    const x = orbit.dist * Math.sin(orbit.phi) * Math.sin(orbit.theta);
-    const y = orbit.dist * Math.cos(orbit.phi);
-    const z = orbit.dist * Math.sin(orbit.phi) * Math.cos(orbit.theta);
-    camera.position.set(x, y, z);
-    camera.lookAt(0, 0, 0);
+  // Orbit
+  let o = {th:0.7, ph:0.6, d:14, dragging:false, lx:0, ly:0};
+  function positionCam(){
+    cam.position.set(
+      o.d*Math.sin(o.ph)*Math.sin(o.th),
+      o.d*Math.cos(o.ph),
+      o.d*Math.sin(o.ph)*Math.cos(o.th)
+    );
+    cam.lookAt(0,0,0);
   }
-  updateCamera();
+  positionCam();
 
-  // Pointer events for orbit
-  wrap.addEventListener('pointerdown', e => {
-    orbit.isDragging = true;
-    orbit.lastX = e.clientX;
-    orbit.lastY = e.clientY;
-    wrap.setPointerCapture(e.pointerId);
+  // Listen on CANVAS so overlay buttons outside it receive clicks freely
+  cvs.addEventListener('pointerdown', e=>{o.dragging=true;o.lx=e.clientX;o.ly=e.clientY;cvs.setPointerCapture(e.pointerId)});
+  cvs.addEventListener('pointermove', e=>{
+    if(!o.dragging) return;
+    o.th -= (e.clientX-o.lx)*.013;
+    o.ph = Math.max(.12, Math.min(Math.PI-.12, o.ph+(e.clientY-o.ly)*.013));
+    o.lx=e.clientX; o.ly=e.clientY; positionCam();
   });
-  wrap.addEventListener('pointermove', e => {
-    if(!orbit.isDragging) return;
-    const dx = e.clientX - orbit.lastX;
-    const dy = e.clientY - orbit.lastY;
-    orbit.theta -= dx * 0.012;
-    orbit.phi = Math.max(0.15, Math.min(Math.PI-0.15, orbit.phi + dy*0.012));
-    orbit.lastX = e.clientX;
-    orbit.lastY = e.clientY;
-    updateCamera();
-  });
-  wrap.addEventListener('pointerup', () => { orbit.isDragging = false; });
-  wrap.addEventListener('wheel', e => {
+  cvs.addEventListener('pointerup', ()=>o.dragging=false);
+  wrap.addEventListener('wheel', e=>{
     e.preventDefault();
-    orbit.dist = Math.max(4, Math.min(40, orbit.dist + e.deltaY * 0.02));
-    updateCamera();
-  }, {passive:false});
+    o.d = Math.max(4, Math.min(45, o.d+e.deltaY*.022));
+    positionCam();
+  },{passive:false});
 
-  // Resize
-  const ro = new ResizeObserver(() => {
-    const w = wrap.clientWidth, h = wrap.clientHeight;
-    renderer.setSize(w, h);
-    camera.aspect = w/h;
-    camera.updateProjectionMatrix();
+  new ResizeObserver(()=>{
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    cam.aspect = wrap.clientWidth/wrap.clientHeight;
+    cam.updateProjectionMatrix();
+  }).observe(wrap);
+
+  let raf;
+  (function loop(){raf=requestAnimationFrame(loop);renderer.render(scene,cam)})();
+
+  return {
+    scene, cam,
+    reset(d=14){o.th=0.7;o.ph=0.6;o.d=d;positionCam()},
+    dispose(){cancelAnimationFrame(raf);renderer.dispose()}
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// GEOMETRY HELPERS
+// ═══════════════════════════════════════════════════════════════════
+const _boxGeo  = new THREE.BoxGeometry(.90,.90,.90);
+const _edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(.90,.90,.90));
+
+function unitCube(color, x, y, z){
+  const m = new THREE.Mesh(_boxGeo, new THREE.MeshLambertMaterial({color}));
+  m.castShadow = m.receiveShadow = true;
+  m.position.set(x,y,z);
+  m.add(new THREE.LineSegments(_edgeGeo, new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.10})));
+  return m;
+}
+
+// ─── Text sprite ──────────────────────────────────────────────────
+function makeSprite(text, opts={}){
+  const {
+    color='#1c1a16', bg='rgba(250,248,244,0.92)',
+    fontSize=28, bold=true, padding=10, maxW=220
+  } = opts;
+
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const font = `${bold?'700':'400'} ${fontSize}px "DM Mono", monospace`;
+  ctx.font = font;
+
+  const lines = text.split('\n');
+  const lineH = fontSize * 1.3;
+  const textW = Math.max(...lines.map(l=>ctx.measureText(l).width));
+  canvas.width  = Math.min(textW + padding*2, maxW*2);
+  canvas.height = lineH * lines.length + padding*1.5;
+
+  ctx.font = font;
+  // Background
+  ctx.fillStyle = bg;
+  roundRectCanvas(ctx, 0, 0, canvas.width, canvas.height, 8);
+  ctx.fill();
+  // Border
+  ctx.strokeStyle = 'rgba(28,26,22,0.15)';
+  ctx.lineWidth = 1.5;
+  roundRectCanvas(ctx, 0, 0, canvas.width, canvas.height, 8);
+  ctx.stroke();
+  // Text
+  ctx.fillStyle = color;
+  ctx.font = font;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  lines.forEach((l,i)=>{
+    ctx.fillText(l, canvas.width/2, padding*0.75 + lineH*(i+0.5));
   });
-  ro.observe(wrap);
 
-  function resetCamera(dist=14){
-    orbit.theta = 0.7; orbit.phi = 0.6; orbit.dist = dist;
-    updateCamera();
-  }
+  const tex = new THREE.CanvasTexture(canvas);
+  const mat = new THREE.SpriteMaterial({map:tex, transparent:true, depthTest:false});
+  const sprite = new THREE.Sprite(mat);
+  const aspect = canvas.width / canvas.height;
+  sprite.scale.set(aspect * 1.6, 1.6, 1);
+  return sprite;
+}
 
-  let animId;
-  function animate(){
-    animId = requestAnimationFrame(animate);
-    renderer.render(scene, camera);
-  }
-  animate();
+function roundRectCanvas(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.closePath();
+}
 
-  function destroy(){
-    cancelAnimationFrame(animId);
-    ro.disconnect();
-    renderer.dispose();
-  }
+// Arrow sprite (dashed line + arrowhead via canvas texture)
+function makeArrow(from, to, color=0x1c1a16){
+  const pts = [new THREE.Vector3(...from), new THREE.Vector3(...to)];
+  const geo = new THREE.BufferGeometry().setFromPoints(pts);
+  const mat = new THREE.LineBasicMaterial({color, transparent:true, opacity:.55});
+  return new THREE.Line(geo, mat);
+}
 
-  return {scene, camera, renderer, resetCamera, destroy};
+// ─── Consecutive odds math ────────────────────────────────────────
+function oddsForN(n){
+  let c=1;
+  for(let k=1;k<n;k++) c+=2*k;
+  const out=[];
+  for(let i=0;i<n;i++){out.push(c);c+=2;}
+  return out;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// UNIT CUBE HELPER
-// ═══════════════════════════════════════════════════════════════════
-const cubeGeo = new THREE.BoxGeometry(0.92, 0.92, 0.92);
-const edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.92,0.92,0.92));
-
-function makeCube(color, x, y, z){
-  const mat = new THREE.MeshLambertMaterial({color});
-  const mesh = new THREE.Mesh(cubeGeo, mat);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  mesh.position.set(x, y, z);
-
-  const edgeMat = new THREE.LineBasicMaterial({color:0x000000, transparent:true, opacity:0.12});
-  const edges = new THREE.LineSegments(edgeGeo, edgeMat);
-  mesh.add(edges);
-  return mesh;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// CONSECUTIVE ODDS MATH
-// ═══════════════════════════════════════════════════════════════════
-function getOddsForN(n){
-  // Returns the n odd numbers that sum to n^3
-  let cursor = 1;
-  for(let k=1; k<n; k++){
-    cursor += 2*k; // skip the k odd numbers for cube k
-  }
-  const odds=[];
-  for(let i=0;i<n;i++){odds.push(cursor);cursor+=2;}
-  return odds;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// TAB 1: LAYERS
+// TAB 1 — LAYERS
 // ═══════════════════════════════════════════════════════════════════
 (function(){
-  const sceneObj = createScene('c-layers', 'canvas-layers');
-  const {scene, resetCamera} = sceneObj;
+  const S = makeScene('c-layers','canvas-layers');
+  let N=3, shown=N;
+  const grp = new THREE.Group();
+  S.scene.add(grp);
+  let layers = []; // layers[z] = meshes[]
 
-  let N = 3;
-  let shownLayers = N;
-  let cubeGroup = new THREE.Group();
-  scene.add(cubeGroup);
-
-  // State: meshes organized as array of layers
-  let layerMeshes = []; // layerMeshes[z] = array of meshes
-
-  function rebuildCube(){
-    cubeGroup.children.forEach(c => { c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); }); });
-    cubeGroup.clear();
-    layerMeshes = [];
-
-    const offset = -(N-1)/2;
-    for(let z=0; z<N; z++){
-      const layer = [];
-      const color = LAYER_COLORS[z % LAYER_COLORS.length];
-      for(let y=0; y<N; y++){
-        for(let x=0; x<N; x++){
-          const m = makeCube(color, offset+x, offset+z, offset+y);
-          layer.push(m);
-        }
-      }
-      layerMeshes.push(layer);
+  function rebuild(){
+    grp.clear();
+    layers = [];
+    const off = -(N-1)/2;
+    for(let z=0;z<N;z++){
+      const col = LAYER_COLS[z%LAYER_COLS.length];
+      const lay = [];
+      for(let y=0;y<N;y++) for(let x=0;x<N;x++) lay.push(unitCube(col,off+x,off+z,off+y));
+      layers.push(lay);
     }
-    applyLayerVisibility();
+    applyVis();
   }
 
-  function applyLayerVisibility(){
-    for(let z=0; z<N; z++){
-      layerMeshes[z].forEach(m => {
-        if(z < shownLayers){
-          if(!m.parent) cubeGroup.add(m);
-          m.visible = true;
-          // Animate: pop in
-          m.scale.setScalar(1);
-        } else {
-          m.visible = false;
-        }
-      });
+  function applyVis(){
+    grp.clear();
+    for(let z=0;z<N;z++){
+      if(z<shown) layers[z].forEach(m=>grp.add(m));
     }
     updateStats();
-    updateLayerList();
+    updateList();
   }
 
   function updateStats(){
     document.getElementById('layerNv').textContent = N;
-    document.getElementById('layer-stat-one').textContent = `${N} × ${N} = ${N*N} cubes`;
-    document.getElementById('layer-stat-shown').textContent = shownLayers;
-    document.getElementById('layer-stat-total').textContent = `${N*N*shownLayers} = ${N}²×${shownLayers}`;
-    document.getElementById('layer-count-display').textContent = `${shownLayers} of ${N} layers`;
-    document.getElementById('btn-add-layer').disabled = shownLayers >= N;
-    document.getElementById('btn-remove-layer').disabled = shownLayers <= 0;
+    document.getElementById('layer-stat-one').textContent = `${N} × ${N} = ${N*N}`;
+    document.getElementById('layer-stat-shown').textContent = shown;
+    document.getElementById('layer-stat-total').textContent = N*N*shown;
+    document.getElementById('layer-stat-formula').textContent = `= ${shown} × ${N*N} = ${shown > 0 ? (shown===N ? N+'³' : shown+'×'+N+'²') : '0'}`;
+    document.getElementById('layer-count-display').textContent = `${shown} of ${N} layers`;
+    document.getElementById('btn-add-layer').disabled = shown>=N;
+    document.getElementById('btn-remove-layer').disabled = shown<=0;
   }
 
-  function updateLayerList(){
+  function updateList(){
     const list = document.getElementById('layer-list');
-    list.innerHTML = '';
-    for(let z=0; z<N; z++){
-      const item = document.createElement('div');
-      item.className = 'layer-item' + (z < shownLayers ? ' active' : '');
-      item.style.opacity = z < shownLayers ? '1' : '0.4';
-      const color = LAYER_COLORS[z % LAYER_COLORS.length];
-      item.innerHTML = `
-        <div class="layer-swatch" style="background:${hexCSS(color)}"></div>
-        <span>Layer ${z+1} — ${N}×${N}=${N*N} cubes</span>
-      `;
-      item.addEventListener('click', () => {
-        shownLayers = z+1;
-        applyLayerVisibility();
-      });
-      list.appendChild(item);
+    list.innerHTML='';
+    for(let z=0;z<N;z++){
+      const col = LAYER_COLS[z%LAYER_COLS.length];
+      const el = document.createElement('div');
+      el.className = 'layer-item'+(z<shown?' active':'');
+      el.style.opacity = z<shown?'1':'0.45';
+      el.innerHTML=`<div class="layer-swatch" style="background:${hexCSS(col)}"></div><span>Layer ${z+1} — ${N}×${N} = ${N*N} cubes</span>`;
+      el.addEventListener('click',()=>{shown=z+1;applyVis();});
+      list.appendChild(el);
     }
   }
 
-  // Slider changes cube size
-  document.getElementById('layerN').addEventListener('input', e => {
-    N = +e.target.value;
-    shownLayers = N;
-    rebuildCube();
-    resetCamera(N*4 + 6);
-  });
+  document.getElementById('layerN').addEventListener('input',e=>{N=+e.target.value;shown=N;rebuild();S.reset(N*3.8+6);});
+  document.getElementById('btn-add-layer').addEventListener('click',()=>{if(shown<N){shown++;applyVis();}});
+  document.getElementById('btn-remove-layer').addEventListener('click',()=>{if(shown>0){shown--;applyVis();}});
+  document.getElementById('reset-layers-cam').addEventListener('click',()=>S.reset(N*3.8+6));
 
-  document.getElementById('btn-add-layer').addEventListener('click', () => {
-    if(shownLayers < N){ shownLayers++; applyLayerVisibility(); }
-  });
-  document.getElementById('btn-remove-layer').addEventListener('click', () => {
-    if(shownLayers > 0){ shownLayers--; applyLayerVisibility(); }
-  });
-  document.getElementById('reset-layers-cam').addEventListener('click', () => resetCamera(N*4+6));
-
-  rebuildCube();
-  resetCamera(14);
+  rebuild(); S.reset(14);
 })();
 
 // ═══════════════════════════════════════════════════════════════════
-// TAB 2: CONSECUTIVE ODDS
+// TAB 2 — CONSECUTIVE ODDS
 // ═══════════════════════════════════════════════════════════════════
 (function(){
-  const sceneObj = createScene('c-odds', 'canvas-odds');
-  const {scene, resetCamera} = sceneObj;
-  let N = 3;
-  let cubeGroup = new THREE.Group();
-  scene.add(cubeGroup);
+  const S = makeScene('c-odds','canvas-odds');
+  // Enable proper transparency sorting
+  S.scene.renderer && (S.scene.renderer.sortObjects = true);
 
-  function rebuild(){
-    cubeGroup.children.forEach(c => {
-      c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
+  let N = 3, hilighted = -1;
+  const grp = new THREE.Group();
+  S.scene.add(grp);
+
+  // Per-cell storage
+  let faceMats  = [];  // MeshLambertMaterial per cell
+  let edgeMats  = [];  // LineBasicMaterial per cell
+  let grpOfCell = [];  // group index per cell
+  let origHex   = [];  // original hex color per cell
+
+  function makeCellMesh(hex, x, y, z) {
+    // Each cell gets its OWN geometries + materials so we can mutate independently
+    const geo  = new THREE.BoxGeometry(0.90, 0.90, 0.90);
+    const mat  = new THREE.MeshLambertMaterial({ color: hex });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow = mesh.receiveShadow = true;
+    mesh.position.set(x, y, z);
+
+    const eGeo = new THREE.EdgesGeometry(geo);
+    const eMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.10 });
+    mesh.add(new THREE.LineSegments(eGeo, eMat));
+
+    return { mesh, mat, eMat };
+  }
+
+  function rebuild() {
+    // Dispose old geometries/materials
+    grp.children.forEach(obj => {
+      obj.traverse(o => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) o.material.dispose();
+      });
     });
-    cubeGroup.clear();
+    grp.clear();
+    faceMats = []; edgeMats = []; grpOfCell = []; origHex = [];
 
-    const odds = getOddsForN(N);
-    const offset = -(N-1)/2;
-    const total = N*N*N;
+    const odds   = oddsForN(N);
+    const off    = -(N - 1) / 2;
+    const total  = N * N * N;
 
-    // Build cumulative boundaries
-    const boundaries = [0];
-    let cum = 0;
-    for(const o of odds){ cum += o; boundaries.push(cum); }
+    // Cumulative boundaries
+    const bounds = [0]; let cum = 0;
+    odds.forEach(o => { cum += o; bounds.push(cum); });
 
-    // Fill cells in scan order (y=bottom to top, then z, then x)
-    let cellIdx = 0;
-    let colorForCell = new Array(total);
-    for(let y=0; y<N; y++){
-      for(let z=0; z<N; z++){
-        for(let x=0; x<N; x++){
-          // Determine group
-          let group = 0;
-          for(let g=0; g<odds.length; g++){
-            if(cellIdx < boundaries[g+1]){ group = g; break; }
-          }
-          colorForCell[cellIdx] = ODDS_COLORS[group % ODDS_COLORS.length];
-          cellIdx++;
+    // Scan order: y → z → x (matches original)
+    let idx = 0;
+    for (let y = 0; y < N; y++) {
+      for (let z = 0; z < N; z++) {
+        for (let x = 0; x < N; x++) {
+          // Find group
+          let g = 0;
+          for (; g < odds.length - 1; g++) if (idx < bounds[g + 1]) break;
+
+          const hex = ODDS_COLS[g % ODDS_COLS.length];
+          const { mesh, mat, eMat } = makeCellMesh(hex, off + x, off + y, off + z);
+          grp.add(mesh);
+          faceMats.push(mat);
+          edgeMats.push(eMat);
+          grpOfCell.push(g);
+          origHex.push(hex);
+          idx++;
         }
       }
     }
 
-    // Render
-    cellIdx = 0;
-    for(let y=0; y<N; y++){
-      for(let z=0; z<N; z++){
-        for(let x=0; x<N; x++){
-          const m = makeCube(colorForCell[cellIdx], offset+x, offset+y, offset+z);
-          cubeGroup.add(m);
-          cellIdx++;
-        }
-      }
-    }
+    hilighted = -1;
+    updatePanel(odds);
+    S.reset(N * 3.8 + 6);
+  }
 
-    // Update panel
+  function applyHighlight() {
+    faceMats.forEach((mat, i) => {
+      const eMat   = edgeMats[i];
+      const isSelected = (hilighted === -1) || (grpOfCell[i] === hilighted);
+
+      if (isSelected) {
+        // Fully visible — restore original colour
+        mat.color.setHex(origHex[i]);
+        mat.transparent = false;
+        mat.opacity     = 1;
+        mat.depthWrite  = true;
+        mat.needsUpdate = true;
+        eMat.color.setHex(0x000000);
+        eMat.opacity    = 0.12;
+        eMat.needsUpdate = true;
+      } else {
+        // Ghost — transparent face, coloured wire outline
+        mat.transparent = true;
+        mat.opacity     = 0;
+        mat.depthWrite  = false;
+        mat.needsUpdate = true;
+        eMat.color.setHex(origHex[i]);
+        eMat.opacity    = 0.20;
+        eMat.needsUpdate = true;
+      }
+    });
+  }
+
+  function updatePanel(odds) {
+    if (!odds) odds = oddsForN(N);
     document.getElementById('oddsNv').textContent = N;
     document.getElementById('odds-identity').textContent =
-      odds.join(' + ') + ' = ' + N**3 + ' = ' + N + '³';
-    const midIdx = Math.floor((N-1)/2);
+      odds.join(' + ') + ' = ' + N ** 3 + ' = ' + N + '³';
+    const midIdx = Math.floor((N - 1) / 2);
     const isOddN = N % 2 === 1;
-    const midDisplay = isOddN
-      ? odds[midIdx] + ' = ' + N + '² = n²'
-      : '(' + odds[midIdx] + '+' + odds[midIdx+1] + ')÷2 = ' + N + '² = n²';
-    document.getElementById('odds-middle').textContent = midDisplay;
+    const mid    = isOddN
+      ? odds[midIdx] + ' = ' + N + '²'
+      : '(' + odds[midIdx] + '+' + odds[midIdx + 1] + ')/2 = ' + N + '²';
+    document.getElementById('odds-middle').textContent = mid;
 
-    const legend = document.getElementById('odds-legend');
-    legend.innerHTML = '';
-    odds.forEach((o,i) => {
-      const color = ODDS_COLORS[i % ODDS_COLORS.length];
-      const isMid = isOddN ? i === midIdx : (i === midIdx || i === midIdx+1);
-      const div = document.createElement('div');
-      div.className = 'odds-item';
-      div.style.borderColor = isMid ? hexCSS(color) : '#d8d4cc';
-      div.innerHTML = `
-        <div class="odds-swatch" style="background:${hexCSS(color)}"></div>
-        <span class="odds-num" style="color:${hexCSS(color)}">${o}</span>
-        <span class="odds-val">${isMid ? '← middle = n²' : ''}</span>
+    // Overlay buttons
+    const overlay = document.getElementById('odds-overlay');
+    overlay.innerHTML = '';
+    odds.forEach((o, i) => {
+      const col    = ODDS_COLS[i % ODDS_COLS.length];
+      const colHex = hexCSS(col);
+      const isMid  = isOddN ? (i === midIdx) : (i === midIdx || i === midIdx + 1);
+      const btn    = document.createElement('button');
+      btn.className = 'odds-btn' + (hilighted === i ? ' active-odd' : '');
+      btn.style.borderColor = hilighted === i ? colHex : colHex + '80';
+      btn.innerHTML = `
+        <div class="odds-btn-swatch" style="background:${colHex}"></div>
+        <span class="odds-btn-num" style="color:${colHex}">${o} cells</span>
+        ${isMid ? `<span class="odds-btn-tag">middle = n²</span>` : ''}
       `;
-      legend.appendChild(div);
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        hilighted = (hilighted === i) ? -1 : i;
+        applyHighlight();
+        updatePanel(odds);
+      });
+      overlay.appendChild(btn);
     });
-
-    resetCamera(N*4+6);
   }
 
   document.getElementById('oddsN').addEventListener('input', e => {
     N = +e.target.value;
     rebuild();
   });
-  document.getElementById('reset-odds-cam').addEventListener('click', () => resetCamera(N*4+6));
+  document.getElementById('reset-odds-cam').addEventListener('click', () => {
+    hilighted = -1;
+    applyHighlight();
+    updatePanel();
+    S.reset(N * 3.8 + 6);
+  });
 
   rebuild();
 })();
 
 // ═══════════════════════════════════════════════════════════════════
-// TAB 3: TAXICAB 1729
+// TAB 3 — TAXICAB 1729
 // ═══════════════════════════════════════════════════════════════════
 (function(){
-  const sceneObj = createScene('c-taxi', 'canvas-taxi');
-  const {scene, resetCamera} = sceneObj;
-  let way = 1; // 1 = 1³+12³, 2 = 9³+10³
+  const S = makeScene('c-taxi','canvas-taxi');
+  let way=1;
+  const grp = new THREE.Group();
+  S.scene.add(grp);
 
-  let cubeGroup = new THREE.Group();
-  scene.add(cubeGroup);
+  // ─── Build a solid cube with edge dimension labels ────────────
+  function labeledCube(sideLen, color, cx, cy, cz, labelLines, labelColor='#1c1a16'){
+    const g = new THREE.Group();
+    g.position.set(cx,cy,cz);
 
-  function rebuildTaxi(){
-    cubeGroup.children.forEach(c => {
-      c.traverse(o => { if(o.geometry) o.geometry.dispose(); if(o.material) o.material.dispose(); });
-    });
-    cubeGroup.clear();
+    // Solid cube mesh
+    const geo = new THREE.BoxGeometry(sideLen, sideLen, sideLen);
+    const mat = new THREE.MeshLambertMaterial({color, transparent:true, opacity:0.80});
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.castShadow=true; mesh.receiveShadow=true;
+    g.add(mesh);
 
-    let a, b;
-    if(way === 1){ a=1; b=12; }
-    else          { a=9;  b=10; }
+    // Wireframe edges
+    const wGeo = new THREE.EdgesGeometry(geo);
+    const wMat = new THREE.LineBasicMaterial({color, transparent:true, opacity:0.6});
+    g.add(new THREE.LineSegments(wGeo, wMat));
 
-    // Scale down: we can't show 12³=1728 individual cubes.
-    // Instead show two symbolic cube outlines / solid blocks of scale a and b
-    // Use solid colored cube of side a and side b, placed side by side
-
-    const colorA = 0x2c5f9e;
-    const colorB = 0xc0392b;
-
-    // Cube A: centered at (-b/2 - a/2 - 1, 0, 0)
-    // Cube B: centered at (a/2 + b/2 + 1, 0, 0)
-    // Make them touch in the middle with a gap
-
-    function solidCube(size, color, cx, cy, cz){
-      // Semi-transparent solid + wireframe
-      const geo = new THREE.BoxGeometry(size, size, size);
-      const mat = new THREE.MeshLambertMaterial({color, transparent:true, opacity:0.75});
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.set(cx, cy, cz);
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-
-      // Wireframe
-      const wGeo = new THREE.EdgesGeometry(geo);
-      const wMat = new THREE.LineBasicMaterial({color, transparent:true, opacity:0.6});
-      const wire = new THREE.LineSegments(wGeo, wMat);
-      mesh.add(wire);
-
-      // Internal unit cube grid lines (for realism, small count only)
-      if(size <= 6){
-        const lineMat = new THREE.LineBasicMaterial({color:0x000000, transparent:true, opacity:0.07});
-        for(let i=0; i<size; i++){
-          for(let j=0; j<size; j++){
-            // Vertical lines along z
-            const pg = new THREE.BufferGeometry().setFromPoints([
-              new THREE.Vector3(-size/2+i+0.5, -size/2, -size/2+j+0.5 - size),
-              new THREE.Vector3(-size/2+i+0.5, size/2, -size/2+j+0.5 - size),
-            ]);
-          }
+    // Internal grid lines (only for small cubes, not 12)
+    if(sideLen <= 9){
+      const lineMat = new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.06});
+      const s = sideLen;
+      for(let i=1;i<s;i++){
+        for(let axis=0;axis<3;axis++){
+          const pts=[];
+          if(axis===0){pts.push(new THREE.Vector3(-s/2+i,-s/2,-s/2),new THREE.Vector3(-s/2+i,s/2,-s/2));}
+          else if(axis===1){pts.push(new THREE.Vector3(-s/2,-s/2+i,-s/2),new THREE.Vector3(s/2,-s/2+i,-s/2));}
+          else{pts.push(new THREE.Vector3(-s/2,-s/2,-s/2+i),new THREE.Vector3(s/2,-s/2,-s/2+i));}
+          const lg=new THREE.BufferGeometry().setFromPoints(pts);
+          g.add(new THREE.Line(lg, lineMat));
         }
       }
-      return mesh;
     }
 
-    const gap = 1.2;
-    const totalWidth = a + b + gap*2;
-    const leftCX  = -(gap + b/2 + a/2);  // cube A left
-    const rightCX =  (gap + a/2 + b/2);  // cube B right
+    // Dimension edge line (along top-front edge)
+    const hl = sideLen/2;
+    const dimLine = makeArrow([-hl, hl+0.3, hl], [hl, hl+0.3, hl], 0x1c1a16);
+    g.add(dimLine);
+    // Tick marks at ends
+    [[-hl, hl],[hl, hl]].forEach(([ex,ey])=>{
+      const tick=makeArrow([ex, ey+0.6, hl],[ex, ey, hl],0x1c1a16);
+      g.add(tick);
+    });
 
-    const meshA = solidCube(a, colorA, leftCX/2 - a/2, a/2 - (a+b)/4, 0);
-    const meshB = solidCube(b, colorB, rightCX/2 + b/2, b/2 - (a+b)/4, 0);
+    // Main label sprite — positioned above-front
+    const labelSprite = makeSprite(labelLines.join('\n'), {
+      color: labelColor,
+      bg: 'rgba(250,248,244,0.95)',
+      fontSize: 24,
+      bold: true
+    });
+    labelSprite.position.set(0, hl+1.8, hl+0.5);
+    g.add(labelSprite);
 
-    // Actually: place them centered nicely
-    // Cube A: left side, Cube B: right side
-    const sepA = -(gap/2 + a/2 + b/4);
-    const sepB =  (gap/2 + b/2 + a/4);
+    // Volume label below the cube
+    const volSprite = makeSprite('= '+sideLen+'³ = '+(sideLen**3).toLocaleString('en-IN'), {
+      color: labelColor,
+      bg: 'rgba(250,248,244,0.90)',
+      fontSize: 20,
+      bold: false
+    });
+    volSprite.position.set(0, -hl-1.6, 0);
+    g.add(volSprite);
 
-    // Simpler: just center each cube symmetrically
-    const geoA = new THREE.BoxGeometry(a, a, a);
-    const matA = new THREE.MeshLambertMaterial({color:colorA, transparent:true, opacity:0.8});
-    const mA = new THREE.Mesh(geoA, matA);
-    mA.position.set(-(b*0.5 + gap), a*0.5 - (Math.max(a,b)/2), 0);
-    mA.castShadow = true; mA.receiveShadow = true;
-    const eA = new THREE.LineSegments(new THREE.EdgesGeometry(geoA),
-      new THREE.LineBasicMaterial({color:colorA, opacity:0.8, transparent:true}));
-    mA.add(eA);
-    cubeGroup.add(mA);
-
-    const geoB = new THREE.BoxGeometry(b, b, b);
-    const matB = new THREE.MeshLambertMaterial({color:colorB, transparent:true, opacity:0.8});
-    const mB = new THREE.Mesh(geoB, matB);
-    mB.position.set(a*0.5 + gap, b*0.5 - (Math.max(a,b)/2), 0);
-    mB.castShadow = true; mB.receiveShadow = true;
-    const eB = new THREE.LineSegments(new THREE.EdgesGeometry(geoB),
-      new THREE.LineBasicMaterial({color:colorB, opacity:0.8, transparent:true}));
-    mB.add(eB);
-    cubeGroup.add(mB);
-
-    // Update button and cards
-    const btn = document.getElementById('taxi-way-btn');
-    const w1 = document.getElementById('taxi-way1-card');
-    const w2 = document.getElementById('taxi-way2-card');
-    if(way===1){
-      btn.textContent = 'Show way 2: 9³ + 10³';
-      w1.style.borderColor = '#9ab4dc'; w1.style.background = '#2c5f9e10';
-      w2.style.borderColor = '#d8d4cc'; w2.style.background = '';
-    } else {
-      btn.textContent = 'Show way 1: 1³ + 12³';
-      w2.style.borderColor = '#9ab4dc'; w2.style.background = '#2c5f9e10';
-      w1.style.borderColor = '#d8d4cc'; w1.style.background = '';
-    }
-
-    const maxSide = Math.max(a,b);
-    resetCamera(maxSide*1.5 + 10);
+    return g;
   }
 
-  document.getElementById('taxi-way-btn').addEventListener('click', () => {
-    way = way===1 ? 2 : 1;
-    rebuildTaxi();
-  });
-  document.getElementById('reset-taxi-cam').addEventListener('click', () => {
-    const a = way===1?1:9, b = way===1?12:10;
-    resetCamera(Math.max(a,b)*1.5+10);
+  function buildTaxi(){
+    grp.clear();
+
+    const [a,b] = way===1?[1,12]:[9,10];
+    const colA = PAL.teal;
+    const colB = PAL.rust;
+    const gap = 1.8;
+
+    // Position cubes: total width = a+b+gap, center at 0
+    const aX = -(gap/2 + b/2);
+    const bX =  (gap/2 + a/2);
+    // Align bottoms
+    const aY = (b-a)/2; // raise A so bottoms align
+    const bY = 0;
+
+    const cubeA = labeledCube(a, colA, aX, aY, 0,
+      ['a = '+a, 'side = '+a],
+      hexCSS(colA)
+    );
+    const cubeB = labeledCube(b, colB, bX, bY, 0,
+      ['b = '+b, 'side = '+b],
+      hexCSS(colB)
+    );
+    grp.add(cubeA);
+    grp.add(cubeB);
+
+    // '+' sprite between cubes
+    const plus = makeSprite('+', {color:'#4a4640', bg:'rgba(250,248,244,0)', fontSize:36, bold:true});
+    plus.position.set((aX+bX)/2, Math.max(a,b)/2+0.5, Math.max(a,b)/2+0.5);
+    grp.add(plus);
+
+    // '= 1729' label below
+    const sumSprite = makeSprite(a+'³ + '+b+'³ = 1729', {
+      color:'#1c1a16', bg:'rgba(250,248,244,0.95)', fontSize:24, bold:true
+    });
+    sumSprite.position.set((aX+bX)/2, -Math.max(a,b)/2-3.0, 0);
+    grp.add(sumSprite);
+
+    // Update UI
+    const btn = document.getElementById('taxi-way-btn');
+    btn.textContent = way===1?'Show way 2: 9³ + 10³':'Show way 1: 1³ + 12³';
+    ['1','2'].forEach(w=>{
+      document.getElementById('taxi-row-'+w).classList.toggle('active-way',+w===way);
+    });
+
+    const maxS = Math.max(a,b);
+    S.reset(maxS*1.6+8);
+  }
+
+  document.getElementById('taxi-way-btn').addEventListener('click',()=>{way=way===1?2:1;buildTaxi();});
+  document.getElementById('reset-taxi-cam').addEventListener('click',()=>{const b=way===1?12:10;S.reset(b*1.6+8);});
+  ['taxi-row-1','taxi-row-2'].forEach(id=>{
+    document.getElementById(id).addEventListener('click',()=>{
+      way=+document.getElementById(id).dataset.way;buildTaxi();
+    });
   });
 
-  rebuildTaxi();
+  buildTaxi();
 })();
 
 // ═══════════════════════════════════════════════════════════════════
 // TABS
 // ═══════════════════════════════════════════════════════════════════
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     tab.classList.add('active');
-    const tid = tab.dataset.tab;
-    document.getElementById('view-'+tid).classList.add('active');
+    document.getElementById('view-'+tab.dataset.tab).classList.add('active');
   });
 });
 </script>
