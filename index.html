@@ -3,619 +3,780 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>3D Cube Explorer — Ganita Prakash Grade 8</title>
+<title>Cubes · Chapter 1</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  /* Warm editorial palette */
-  --paper:  #faf8f4;
-  --paper2: #f3f0ea;
-  --paper3: #e8e3d8;
-  --ink:    #1c1a16;
-  --ink2:   #4a4640;
-  --ink3:   #8a8580;
-  --rule:   #d4cfc5;
 
-  --teal:   #1d6a72;
-  --teal2:  #2a8a94;
-  --teal-bg:#e8f4f5;
-  --rust:   #b84a2a;
-  --rust2:  #d45c36;
-  --rust-bg:#fdf0ec;
-  --gold:   #c08030;
-  --gold-bg:#fdf5e8;
-  --sage:   #3a6a48;
-  --sage-bg:#eaf2ec;
-
-  --font:  'DM Sans', sans-serif;
-  --serif: 'Lora', Georgia, serif;
-  --mono:  'DM Mono', ui-monospace, monospace;
-
-  --radius: 10px;
-  --shadow: 0 2px 12px rgba(28,26,22,.08);
+:root {
+  --bg: #08070a;
+  --surface: #0f0e13;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold-dim: rgba(201,168,76,0.15);
+  --gold-glow: rgba(201,168,76,0.25);
+  --text: #f0ece0;
+  --text2: rgba(240,236,224,0.55);
+  --text3: rgba(240,236,224,0.3);
+  --teal: #4ecdc4;
+  --rust: #e8604c;
+  --sage: #7bc67a;
+  --violet: #9b7fe8;
+  --mono: 'Space Mono', monospace;
+  --serif: 'Instrument Serif', Georgia, serif;
+  --sans: 'Syne', sans-serif;
 }
 
-body{
-  font-family:var(--font);
-  background:var(--paper);
-  color:var(--ink);
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-  padding:32px 20px 60px;
-  line-height:1.6;
-  /* Subtle paper texture via repeating gradient */
-  background-image:
-    radial-gradient(circle at 20% 30%, rgba(192,128,48,.04) 0, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(29,106,114,.04) 0, transparent 50%);
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow: hidden;
 }
 
-.app{max-width:960px;margin:0 auto}
-
-/* ══ HEADER ═══════════════════════════════════════════════════ */
-.header{margin-bottom:28px;border-bottom:1.5px solid var(--rule);padding-bottom:20px}
-.chapter-badge{
-  display:inline-flex;align-items:center;gap:8px;
-  background:var(--paper2);border:1.5px solid var(--rule);
-  border-radius:20px;padding:4px 14px 4px 10px;
-  font-size:11px;font-weight:600;letter-spacing:.6px;
-  text-transform:uppercase;color:var(--ink3);margin-bottom:12px
-}
-.badge-num{
-  width:22px;height:22px;border-radius:50%;
-  background:var(--teal);color:#fff;
-  font-size:12px;font-weight:700;font-family:var(--mono);
-  display:flex;align-items:center;justify-content:center
-}
-h1{
-  font-family:var(--serif);font-size:30px;font-weight:700;
-  color:var(--ink);letter-spacing:-.3px;line-height:1.2
-}
-.header-sub{font-size:14px;color:var(--ink2);margin-top:6px;max-width:520px}
-
-/* ══ CARD ══════════════════════════════════════════════════════ */
-.card{
-  background:var(--paper);
-  border:1.5px solid var(--rule);
-  border-radius:14px;
-  padding:24px;
-  margin-bottom:20px;
-  box-shadow:var(--shadow)
+/* ── LAYOUT ─────────────────────────────────────── */
+#app {
+  position: fixed; inset: 0;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  grid-template-rows: 1fr;
 }
 
-/* ══ TABS ══════════════════════════════════════════════════════ */
-.tabs{
-  display:flex;gap:3px;
-  background:var(--paper2);
-  border:1.5px solid var(--rule);
-  border-radius:12px;padding:4px;
-  margin-bottom:24px
-}
-.tab{
-  flex:1;padding:9px 10px;
-  border:none;background:transparent;
-  border-radius:9px;
-  font-family:var(--font);font-size:13px;font-weight:600;
-  color:var(--ink3);cursor:pointer;transition:all .18s;text-align:center
-}
-.tab:hover{color:var(--ink2)}
-.tab.active{
-  background:#fff;color:var(--ink);
-  box-shadow:0 1px 4px rgba(28,26,22,.1);
-  border:1.5px solid var(--rule)
+/* ── LEFT PANEL ─────────────────────────────────── */
+#panel {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
 }
 
-.view{display:none}
-.view.active{display:block}
-
-/* ══ CONCEPT BANNER ═══════════════════════════════════════════ */
-.concept{
-  background:var(--gold-bg);
-  border-left:3px solid var(--gold);
-  border-radius:0 8px 8px 0;
-  padding:11px 16px;
-  margin-bottom:20px;
-  font-family:var(--serif);
-  font-style:italic;
-  font-size:14px;
-  color:#4a3010;
-  line-height:1.65
-}
-.concept strong{font-style:normal;font-weight:700;color:#3a2008}
-
-/* ══ SCENE LAYOUT ══════════════════════════════════════════════ */
-.scene-layout{
-  display:grid;
-  grid-template-columns:1fr 264px;
-  gap:18px;align-items:start
-}
-@media(max-width:700px){.scene-layout{grid-template-columns:1fr}}
-
-/* Canvas */
-.canvas-wrap{
-  position:relative;
-  background:var(--paper2);
-  border:1.5px solid var(--rule);
-  border-radius:12px;
-  overflow:hidden;
-  height:400px;
-  touch-action:none;
-  cursor:grab
-}
-.canvas-wrap:active{cursor:grabbing}
-.canvas-wrap canvas{display:block;width:100%!important;height:100%!important}
-.canvas-hint{
-  position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
-  font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;
-  letter-spacing:.5px;background:rgba(250,248,244,.85);
-  padding:4px 12px;border-radius:20px;white-space:nowrap;pointer-events:none;
-  border:1px solid var(--rule)
+.panel-top {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
 }
 
-/* ══ SIDE PANEL ════════════════════════════════════════════════ */
-.side{display:flex;flex-direction:column;gap:10px}
-
-.stat{
-  background:#fff;border:1.5px solid var(--rule);
-  border-radius:var(--radius);padding:12px 14px
+.chapter-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
-.stat.accent-teal{background:var(--teal-bg);border-color:var(--teal2)}
-.stat.accent-rust{background:var(--rust-bg);border-color:var(--rust2)}
-.stat.accent-gold{background:var(--gold-bg);border-color:var(--gold)}
-.stat-lbl{
-  font-size:9px;font-weight:700;text-transform:uppercase;
-  letter-spacing:.7px;color:var(--ink3);margin-bottom:4px
-}
-.stat-val{
-  font-family:var(--mono);font-size:20px;font-weight:600;
-  color:var(--ink);line-height:1.15
-}
-.stat.accent-teal .stat-val{color:var(--teal)}
-.stat.accent-rust .stat-val{color:var(--rust)}
-.stat.accent-gold .stat-val{color:var(--gold)}
-.stat-sub{font-size:11px;color:var(--ink3);margin-top:3px;font-family:var(--mono)}
-
-/* Slider */
-.ctrl{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.ctrl-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);white-space:nowrap}
-.ctrl input[type=range]{flex:1;accent-color:var(--teal);height:5px;cursor:pointer}
-.ctrl-val{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--teal);min-width:28px;text-align:right}
-
-/* Layer buttons */
-.layer-controls{display:flex;gap:8px;margin-bottom:14px;align-items:center}
-.lbtn{
-  width:36px;height:36px;border-radius:8px;
-  border:1.5px solid var(--rule);background:#fff;
-  font-family:var(--mono);font-size:20px;font-weight:700;
-  color:var(--ink2);cursor:pointer;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .14s;user-select:none;line-height:1
-}
-.lbtn:hover{border-color:var(--ink3)}
-.lbtn:active{transform:scale(.93)}
-.lbtn.add-btn{background:var(--teal);border-color:var(--teal);color:#fff}
-.lbtn.add-btn:hover{background:#155a62}
-.lbtn:disabled{opacity:.3;cursor:default;transform:none}
-.layer-count-display{
-  flex:1;text-align:center;
-  font-family:var(--mono);font-size:14px;font-weight:600;color:var(--ink2);
-  background:var(--paper2);border:1.5px solid var(--rule);border-radius:8px;padding:6px
+.chapter-label::before {
+  content: '';
+  display: block;
+  width: 18px; height: 1px;
+  background: var(--gold);
 }
 
-/* Layer list */
-.layer-list{display:flex;flex-direction:column;gap:3px;max-height:150px;overflow-y:auto}
-.layer-item{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 10px;
-  background:var(--paper2);border:1.5px solid var(--rule);
-  border-radius:8px;font-family:var(--mono);font-size:11.5px;
-  font-weight:600;color:var(--ink2);cursor:pointer;transition:all .12s
+h1 {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--text);
+  margin-bottom: 8px;
 }
-.layer-item:hover{border-color:var(--ink3);background:#fff}
-.layer-item.active{background:#fff;border-color:var(--teal);color:var(--ink)}
-.layer-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-
-/* Orbit reset */
-.reset-cam{
-  padding:7px 12px;border:1.5px solid var(--rule);border-radius:8px;
-  background:#fff;font-family:var(--font);font-size:12px;
-  font-weight:600;color:var(--ink3);cursor:pointer;transition:all .12s;
-  text-align:center
-}
-.reset-cam:hover{border-color:var(--ink3);color:var(--ink)}
-
-/* Odds legend items */
-.odds-list{display:flex;flex-direction:column;gap:4px}
-.odds-row{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 10px;
-  background:var(--paper2);border:1.5px solid var(--rule);
-  border-radius:8px;cursor:pointer;transition:all .14s
-}
-.odds-row:hover{background:#fff;border-color:var(--ink3)}
-.odds-row.highlighted{background:#fff;border-width:2px}
-.odds-swatch{width:12px;height:12px;border-radius:3px;flex-shrink:0}
-.odds-num{font-family:var(--mono);font-size:13px;font-weight:700;flex:1}
-.odds-tag{
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
-  padding:2px 7px;border-radius:10px;background:var(--gold-bg);color:var(--gold)
+h1 em {
+  font-style: italic;
+  color: var(--gold2);
 }
 
-/* Odds overlay — buttons inside the canvas */
-#odds-overlay{
-  position:absolute;
-  top:12px;left:12px;
-  display:flex;flex-direction:column;gap:5px;
-  z-index:10
-}
-.odds-btn{
-  display:flex;align-items:center;gap:7px;
-  padding:6px 11px;
-  border-radius:20px;
-  border:2px solid;
-  font-family:var(--mono);font-size:12px;font-weight:700;
-  cursor:pointer;
-  pointer-events:all;
-  transition:all .15s;
-  white-space:nowrap;
-  backdrop-filter:blur(4px);
-  -webkit-backdrop-filter:blur(4px);
-  background:rgba(250,248,244,0.88);
-  box-shadow:0 1px 6px rgba(28,26,22,.12)
-}
-.odds-btn:hover{
-  background:rgba(255,255,255,0.97);
-  transform:translateX(3px);
-  box-shadow:0 2px 10px rgba(28,26,22,.18)
-}
-.odds-btn.active-odd{
-  background:rgba(255,255,255,0.97);
-  transform:translateX(4px);
-  box-shadow:0 2px 12px rgba(28,26,22,.22)
-}
-.odds-btn-swatch{
-  width:10px;height:10px;border-radius:50%;flex-shrink:0
-}
-.odds-btn-num{color:var(--ink)}
-.odds-btn-tag{
-  font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;
-  padding:1px 6px;border-radius:8px;background:var(--gold-bg);color:var(--gold)
+.subtitle {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  line-height: 1.7;
+  letter-spacing: .3px;
 }
 
-/* Taxi panel */
-.taxi-way-btn{
-  display:flex;justify-content:center;margin-top:12px
+/* ── TABS ───────────────────────────────────────── */
+.tabs {
+  display: flex;
+  padding: 12px 16px 0;
+  gap: 2px;
+  flex-shrink: 0;
 }
-.tbtn{
-  padding:9px 22px;border-radius:9px;
-  background:var(--teal);border:none;color:#fff;
-  font-family:var(--font);font-size:14px;font-weight:600;
-  cursor:pointer;transition:all .14s;letter-spacing:.2px
-}
-.tbtn:hover{background:#155a62}
 
-/* Taxi decomposition display */
-.taxi-decomp{
-  display:flex;flex-direction:column;gap:6px;
-  padding:12px 14px;background:var(--paper2);border:1.5px solid var(--rule);
-  border-radius:var(--radius)
+.tab {
+  flex: 1;
+  padding: 8px 6px;
+  border: none;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-bottom: 1.5px solid transparent;
+  transition: all .2s;
+  text-align: center;
 }
-.taxi-way-row{
-  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-  padding:8px 10px;border:1.5px solid var(--rule);
-  border-radius:8px;background:#fff;
-  font-family:var(--mono);font-size:12.5px;font-weight:600;
-  cursor:pointer;transition:all .14s
+.tab:hover { color: var(--text2); }
+.tab.active {
+  color: var(--gold);
+  border-bottom-color: var(--gold);
 }
-.taxi-way-row.active-way{border-color:var(--teal);background:var(--teal-bg)}
-.taxi-way-row:hover{border-color:var(--ink3)}
-.tw-label{color:var(--ink3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
-.tw-eq{color:var(--ink);font-size:11px}
-.tw-check{color:var(--sage);font-weight:700}
+
+.tab-body {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 20px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+
+.pane { display: none; }
+.pane.active { display: block; }
+
+/* ── CONCEPT TEXT ───────────────────────────────── */
+.concept {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  font-style: italic;
+  line-height: 1.75;
+  color: var(--text2);
+  border-left: 2px solid var(--gold);
+  padding-left: 14px;
+  margin-bottom: 22px;
+}
+.concept strong {
+  font-style: normal;
+  color: var(--gold2);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+
+/* ── CONTROLS ───────────────────────────────────── */
+.ctrl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+.ctrl-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  white-space: nowrap;
+}
+.ctrl-row input[type=range] {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 2px;
+  background: var(--border2);
+  border-radius: 1px;
+  outline: none;
+  cursor: pointer;
+}
+.ctrl-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold-glow);
+  cursor: pointer;
+}
+.ctrl-val {
+  font-family: var(--mono);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  min-width: 24px;
+  text-align: right;
+}
+
+/* ── STATS ──────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+.stat-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 13px;
+}
+.stat-card.span2 { grid-column: span 2; }
+.stat-card.gold-card {
+  background: var(--gold-dim);
+  border-color: rgba(201,168,76,0.3);
+}
+.stat-lbl {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 5px;
+}
+.stat-val {
+  font-family: var(--mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+}
+.gold-card .stat-val { color: var(--gold2); }
+.stat-sub {
+  font-family: var(--mono);
+  font-size: 9px;
+  color: var(--text3);
+  margin-top: 3px;
+}
+
+/* ── LAYER BUTTONS ──────────────────────────────── */
+.layer-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.icn-btn {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.icn-btn:hover { border-color: var(--gold); color: var(--gold); }
+.icn-btn:disabled { opacity: .25; cursor: default; }
+.icn-btn.add { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+.icn-btn.add:hover { background: var(--gold2); }
+.layer-counter {
+  flex: 1;
+  text-align: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text2);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 7px;
+}
+
+.layer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  max-height: 140px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+.layer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text3);
+  cursor: pointer;
+  transition: all .12s;
+}
+.layer-item:hover { border-color: var(--border2); color: var(--text2); }
+.layer-item.on { border-color: rgba(201,168,76,0.35); color: var(--text); background: var(--gold-dim); }
+.layer-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── ODDS BUTTONS ───────────────────────────────── */
+.odds-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.odds-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all .14s;
+}
+.odds-row:hover { border-color: var(--border2); }
+.odds-row.on { border-width: 1.5px; }
+.odds-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.odds-num { font-family: var(--mono); font-size: 13px; font-weight: 700; flex: 1; }
+.odds-badge {
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--gold-dim);
+  color: var(--gold);
+}
+
+/* ── TAXI ROWS ──────────────────────────────────── */
+.taxi-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 8px;
+}
+.taxi-row:hover { border-color: var(--border2); }
+.taxi-row.on { border-color: rgba(201,168,76,0.4); background: var(--gold-dim); }
+.taxi-tag { font-family: var(--mono); font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); }
+.taxi-eq { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); }
+.taxi-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); }
+
+/* ── RESET BUTTON ───────────────────────────────── */
+.reset-btn {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .15s;
+  margin-top: 4px;
+}
+.reset-btn:hover { border-color: var(--border2); color: var(--text2); }
+
+/* ── CANVAS AREA ─────────────────────────────────── */
+#stage {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+#stage canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Corner metadata */
+.meta {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  pointer-events: none;
+  line-height: 1.8;
+}
+.meta-tl { top: 20px; left: 24px; }
+.meta-tr { top: 20px; right: 24px; text-align: right; }
+.meta-bl { bottom: 20px; left: 24px; }
+.meta-br { bottom: 20px; right: 24px; text-align: right; }
+
+.meta span { color: var(--gold); }
+
+/* Drag hint */
+#drag-hint {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text3);
+  pointer-events: none;
+  animation: fadeHint 3s ease forwards;
+}
+@keyframes fadeHint {
+  0%{opacity:0} 10%{opacity:1} 70%{opacity:1} 100%{opacity:0}
+}
+
+/* ── ODDS CANVAS OVERLAY ─────────────────────────── */
+#odds-canvas-overlay {
+  position: absolute;
+  top: 20px; left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  pointer-events: none;
+}
+.oco-btn {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px 5px 8px;
+  border-radius: 20px;
+  border: 1.5px solid;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  pointer-events: all;
+  transition: all .15s;
+  background: rgba(8,7,10,0.82);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+.oco-btn:hover { transform: translateX(3px); }
+.oco-btn.on { transform: translateX(5px); }
+.oco-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.oco-badge {
+  font-size: 7px;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: var(--gold-dim);
+  color: var(--gold);
+}
+
+/* ── DECORATIVE GRAIN ─────────────────────────────── */
+#grain {
+  position: fixed; inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: .018;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 </style>
 </head>
 <body>
-<div class="app">
+<div id="grain"></div>
 
-  <div class="header">
-    <div class="chapter-badge">
-      <div class="badge-num">1</div>
-      Chapter 1 · A Square and A Cube
+<div id="app">
+  <!-- ── LEFT PANEL ── -->
+  <div id="panel">
+    <div class="panel-top">
+      <div class="chapter-label">Chapter 1 &nbsp;·&nbsp; Squares & Cubes</div>
+      <h1>A Square<br>and a <em>Cube</em></h1>
+      <p class="subtitle">Three ways to see<br>why n³ is what it is.</p>
     </div>
-    <h1>3D Cube Explorer</h1>
-    <p class="header-sub">Build cubes layer by layer, discover how consecutive odd numbers sum to every cube, and explore Ramanujan's famous taxicab number.</p>
+
+    <div class="tabs">
+      <button class="tab active" data-t="layers">Layers</button>
+      <button class="tab" data-t="odds">Odd Sums</button>
+      <button class="tab" data-t="taxi">1729</button>
+    </div>
+
+    <div class="tab-body">
+      <!-- LAYERS PANE -->
+      <div class="pane active" id="pane-layers">
+        <div class="concept">
+          <strong>The key idea</strong><br>
+          n³ = n layers of n×n. Each layer adds exactly n² unit cubes.
+        </div>
+
+        <div class="ctrl-row">
+          <span class="ctrl-label">n</span>
+          <input type="range" id="layerN" min="1" max="6" value="3">
+          <span class="ctrl-val" id="layerNv">3</span>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-lbl">Per layer</div>
+            <div class="stat-val" id="s-per-layer">9</div>
+            <div class="stat-sub">n × n cubes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-lbl">Layers shown</div>
+            <div class="stat-val" id="s-layers-shown">3</div>
+          </div>
+          <div class="stat-card gold-card span2">
+            <div class="stat-lbl">Total unit cubes</div>
+            <div class="stat-val" id="s-total">27</div>
+            <div class="stat-sub" id="s-formula">= 3 × 9 = 3³</div>
+          </div>
+        </div>
+
+        <div class="layer-nav">
+          <button class="icn-btn" id="btn-rm">−</button>
+          <div class="layer-counter" id="layer-counter">3 of 3 layers</div>
+          <button class="icn-btn add" id="btn-add">+</button>
+        </div>
+        <div class="layer-list" id="layer-list"></div>
+        <button class="reset-btn" id="reset-layers">↺ reset view</button>
+      </div>
+
+      <!-- ODDS PANE -->
+      <div class="pane" id="pane-odds">
+        <div class="concept">
+          <strong>Hidden pattern</strong><br>
+          Every n³ equals the sum of n consecutive odd numbers. The middle one is always n².
+        </div>
+
+        <div class="ctrl-row">
+          <span class="ctrl-label">n</span>
+          <input type="range" id="oddsN" min="1" max="6" value="3">
+          <span class="ctrl-val" id="oddsNv" style="color:var(--teal)">3</span>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card gold-card span2">
+            <div class="stat-lbl">Identity</div>
+            <div class="stat-val" id="s-odds-identity" style="font-size:13px;line-height:1.5">7+9+11 = 27 = 3³</div>
+          </div>
+          <div class="stat-card span2">
+            <div class="stat-lbl">Middle odd = n²</div>
+            <div class="stat-val" id="s-odds-mid">9 = 3²</div>
+          </div>
+        </div>
+
+        <div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Click a group to isolate it</div>
+        <div class="odds-legend" id="odds-legend"></div>
+        <button class="reset-btn" id="reset-odds">↺ reset view</button>
+      </div>
+
+      <!-- TAXI PANE -->
+      <div class="pane" id="pane-taxi">
+        <div class="concept">
+          <strong>Hardy–Ramanujan</strong><br>
+          1729 is the smallest number expressible as the sum of two cubes in two <em>different</em> ways.
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-card gold-card span2">
+            <div class="stat-lbl">The taxicab number</div>
+            <div class="stat-val" style="font-size:28px">1729</div>
+            <div class="stat-sub">Hardy called it dull. Ramanujan disagreed.</div>
+          </div>
+        </div>
+
+        <div class="taxi-row on" id="taxi-r1" data-w="1">
+          <div class="taxi-tag">Way 1</div>
+          <div class="taxi-eq">1³ + 12³</div>
+          <div class="taxi-sub">1 + 1,728 = 1729</div>
+        </div>
+        <div class="taxi-row" id="taxi-r2" data-w="2">
+          <div class="taxi-tag">Way 2</div>
+          <div class="taxi-eq">9³ + 10³</div>
+          <div class="taxi-sub">729 + 1,000 = 1729</div>
+        </div>
+
+        <div class="stat-card" style="margin-top:4px">
+          <div class="stat-lbl">Why remarkable</div>
+          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.8;margin-top:4px">Most numbers can't be written as a sum of two cubes even once.<br>1729 does it twice — and it's the <span style="color:var(--gold)">smallest</span> such number.</div>
+        </div>
+
+        <button class="reset-btn" id="reset-taxi" style="margin-top:12px">↺ reset view</button>
+      </div>
+    </div>
   </div>
 
-  <div class="card">
-    <div class="tabs">
-      <button class="tab active" data-tab="layers">Build layer by layer</button>
-      <button class="tab" data-tab="odds">Consecutive odds</button>
-      <button class="tab" data-tab="taxi">Taxicab 1729</button>
+  <!-- ── CANVAS ── -->
+  <div id="stage">
+    <canvas id="c"></canvas>
+    <div class="meta meta-tl" id="meta-tl">
+      Chapter 1<br><span>A Square and a Cube</span>
     </div>
-
-    <!-- ══ LAYERS TAB ══ -->
-    <div class="view active" id="view-layers">
-      <div class="concept">
-        <strong>The key idea:</strong> n³ simply means <em>n layers of n×n</em>. Add layers one at a time — each layer adds exactly n² unit cubes, so after n layers you have n × n² = n³ cubes total.
-      </div>
-      <div class="ctrl">
-        <span class="ctrl-lbl">Cube size n</span>
-        <input type="range" id="layerN" min="1" max="6" value="3">
-        <span class="ctrl-val" id="layerNv">3</span>
-      </div>
-      <div class="scene-layout">
-        <div>
-          <div class="canvas-wrap" id="canvas-layers">
-            <canvas id="c-layers"></canvas>
-            <div class="canvas-hint">Drag to rotate · Scroll to zoom</div>
-          </div>
-          <div class="layer-controls" style="margin-top:12px">
-            <button class="lbtn" id="btn-remove-layer">−</button>
-            <div class="layer-count-display" id="layer-count-display">3 of 3 layers</div>
-            <button class="lbtn add-btn" id="btn-add-layer">+</button>
-          </div>
-        </div>
-        <div class="side">
-          <div class="stat">
-            <div class="stat-lbl">Each layer is</div>
-            <div class="stat-val" id="layer-stat-one">3 × 3 = 9</div>
-            <div class="stat-sub">unit cubes</div>
-          </div>
-          <div class="stat">
-            <div class="stat-lbl">Layers shown</div>
-            <div class="stat-val" id="layer-stat-shown">3</div>
-          </div>
-          <div class="stat accent-teal">
-            <div class="stat-lbl">Total cubes so far</div>
-            <div class="stat-val" id="layer-stat-total">27</div>
-            <div class="stat-sub" id="layer-stat-formula">= 3 × 9 = 3³</div>
-          </div>
-          <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-top:2px">Click a layer to show up to it</div>
-          <div class="layer-list" id="layer-list"></div>
-          <button class="reset-cam" id="reset-layers-cam">Reset view</button>
-        </div>
-      </div>
+    <div class="meta meta-tr" id="meta-tr">
+      Mode · <span id="meta-mode">LAYERS</span><br>
+      n = <span id="meta-n">3</span>
     </div>
-
-    <!-- ══ ODDS TAB ══ -->
-    <div class="view" id="view-odds">
-      <div class="concept">
-        <strong>The surprising pattern:</strong> Every cube n³ equals the sum of exactly n consecutive odd numbers. The <em>middle</em> one is always n². Tap any coloured button on the canvas to highlight that group of cells.
-      </div>
-      <div class="ctrl">
-        <span class="ctrl-lbl">Cube n</span>
-        <input type="range" id="oddsN" min="1" max="6" value="3">
-        <span class="ctrl-val" id="oddsNv" style="color:var(--rust)">3</span>
-      </div>
-      <div class="scene-layout">
-        <div>
-          <div style="position:relative">
-            <div class="canvas-wrap" id="canvas-odds">
-              <canvas id="c-odds"></canvas>
-              <div class="canvas-hint">Drag to rotate</div>
-            </div>
-            <div id="odds-overlay"></div>
-          </div>
-        </div>
-        <div class="side">
-          <div class="stat accent-rust">
-            <div class="stat-lbl">n³ as a sum</div>
-            <div class="stat-val" id="odds-identity" style="font-size:14px;line-height:1.4">7 + 9 + 11 = 27 = 3³</div>
-          </div>
-          <div class="stat accent-gold">
-            <div class="stat-lbl">Middle odd = n²</div>
-            <div class="stat-val" id="odds-middle">9 = 3²</div>
-            <div class="stat-sub">The central odd is always the square</div>
-          </div>
-          <button class="reset-cam" id="reset-odds-cam">Reset view</button>
-        </div>
-      </div>
+    <div class="meta meta-bl">
+      Drag to orbit &nbsp;·&nbsp; Scroll to zoom
     </div>
-
-    <!-- ══ TAXI TAB ══ -->
-    <div class="view" id="view-taxi">
-      <div class="concept">
-        <strong>1729 — the Hardy–Ramanujan number:</strong> Hardy arrived in a taxi numbered 1729 and called it "dull." Ramanujan instantly replied: <em>"It is the smallest number expressible as the sum of two cubes in two different ways."</em> Toggle between the two ways below — notice that both pairs of cubes have completely different sizes, yet both sum to exactly 1729.
-      </div>
-      <div class="scene-layout">
-        <div>
-          <div class="canvas-wrap" id="canvas-taxi">
-            <canvas id="c-taxi"></canvas>
-            <div class="canvas-hint" id="taxi-hint">Drag to rotate · Labels show cube dimensions</div>
-          </div>
-          <div class="taxi-way-btn">
-            <button class="tbtn" id="taxi-way-btn">Show way 2: 9³ + 10³</button>
-          </div>
-        </div>
-        <div class="side">
-          <div class="stat accent-teal">
-            <div class="stat-lbl">The taxicab number</div>
-            <div class="stat-val">1729</div>
-            <div class="stat-sub">= 12³ + 1³ = 10³ + 9³</div>
-          </div>
-          <div class="taxi-decomp">
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:4px">Both decompositions</div>
-            <div class="taxi-way-row active-way" id="taxi-row-1" data-way="1">
-              <span class="tw-label">Way 1</span>
-              <span>1³ + 12³</span>
-              <span class="tw-eq">= 1 + 1,728</span>
-              <span class="tw-check">= 1729 ✓</span>
-            </div>
-            <div class="taxi-way-row" id="taxi-row-2" data-way="2">
-              <span class="tw-label">Way 2</span>
-              <span>9³ + 10³</span>
-              <span class="tw-eq">= 729 + 1,000</span>
-              <span class="tw-check">= 1729 ✓</span>
-            </div>
-          </div>
-          <div class="stat">
-            <div class="stat-lbl">Why remarkable</div>
-            <div style="font-size:12.5px;color:var(--ink2);line-height:1.55">Most numbers can't be written as a sum of two cubes <em>even once</em>. 1729 does it twice — and it's the <strong>smallest</strong> number with this property.</div>
-          </div>
-          <button class="reset-cam" id="reset-taxi-cam">Reset view</button>
-        </div>
-      </div>
+    <div class="meta meta-br" id="meta-br">
+      Total cubes · <span>27</span>
     </div>
-
+    <div id="odds-canvas-overlay"></div>
+    <div id="drag-hint">← drag to rotate →</div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════════════════════════
-// PALETTE (matching CSS vars)
-// ═══════════════════════════════════════════════════════════════════
-const PAL = {
-  teal:   0x1d6a72, teal2: 0x2a8a94,
-  rust:   0xb84a2a, rust2: 0xd45c36,
-  gold:   0xc08030,
-  sage:   0x3a6a48,
-  violet: 0x6a4a90,
-  ocean:  0x2a5a8a,
+// ═══════════════════════════════════════════════
+// COLOURS
+// ═══════════════════════════════════════════════
+const C = {
+  gold:   0xc9a84c,
+  gold2:  0xe8c96a,
+  teal:   0x4ecdc4,
+  rust:   0xe8604c,
+  sage:   0x7bc67a,
+  violet: 0x9b7fe8,
+  ocean:  0x4a8fc0,
+  pink:   0xe87fa8,
 };
+const COLS = [C.teal, C.rust, C.gold, C.sage, C.violet, C.ocean];
+const COLS_CSS = ['#4ecdc4','#e8604c','#c9a84c','#7bc67a','#9b7fe8','#4a8fc0'];
+function hex(n){ return '#'+n.toString(16).padStart(6,'0') }
 
-const LAYER_COLS = [PAL.teal, PAL.rust, PAL.gold, PAL.sage, PAL.violet, PAL.ocean];
-const ODDS_COLS  = [PAL.teal, PAL.rust, PAL.gold, PAL.sage, PAL.violet, PAL.ocean];
+// ═══════════════════════════════════════════════
+// RENDERER (single shared)
+// ═══════════════════════════════════════════════
+const canvas = document.getElementById('c');
+const stage  = document.getElementById('stage');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setClearColor(0x08070a, 1);
 
-function hexCSS(h){ return '#'+h.toString(16).padStart(6,'0') }
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(0x08070a, 40, 90);
 
-// ═══════════════════════════════════════════════════════════════════
-// SCENE FACTORY
-// ═══════════════════════════════════════════════════════════════════
-function makeScene(canvasId, wrapId, bgColor=0xf3f0ea){
-  const cvs = document.getElementById(canvasId);
-  const wrap = document.getElementById(wrapId);
+const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
 
-  const renderer = new THREE.WebGLRenderer({canvas:cvs, antialias:true, alpha:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
-  renderer.setSize(wrap.clientWidth, wrap.clientHeight);
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// Lights — dramatic side-lit
+const amb = new THREE.AmbientLight(0x1a1628, 0.9);
+scene.add(amb);
+const key = new THREE.DirectionalLight(0xffd88a, 1.4);
+key.position.set(12, 18, 10);
+key.castShadow = true;
+key.shadow.mapSize.set(2048,2048);
+scene.add(key);
+const fill = new THREE.DirectionalLight(0x2a4a6a, 0.35);
+fill.position.set(-10, -5, -8);
+scene.add(fill);
+const rim = new THREE.DirectionalLight(0x4ecdc4, 0.18);
+rim.position.set(0, -12, 10);
+scene.add(rim);
 
-  const scene = new THREE.Scene();
-  scene.background = new THREE.Color(bgColor);
-  // Subtle fog for depth
-  scene.fog = new THREE.Fog(bgColor, 35, 80);
+// Ground plane for shadow catching
+const ground = new THREE.Mesh(
+  new THREE.PlaneGeometry(80, 80),
+  new THREE.ShadowMaterial({ opacity: 0.25 })
+);
+ground.rotation.x = -Math.PI/2;
+ground.position.y = -20;
+ground.receiveShadow = true;
+scene.add(ground);
 
-  const cam = new THREE.PerspectiveCamera(42, wrap.clientWidth/wrap.clientHeight, .1, 200);
+// Orbit
+let o = { th: 0.65, ph: 0.58, d: 18, dragging: false, lx: 0, ly: 0 };
+function posCam() {
+  cam.position.set(
+    o.d * Math.sin(o.ph) * Math.sin(o.th),
+    o.d * Math.cos(o.ph),
+    o.d * Math.sin(o.ph) * Math.cos(o.th)
+  );
+  cam.lookAt(0, 0, 0);
+}
+posCam();
 
-  // Lights — warm editorial
-  scene.add(new THREE.AmbientLight(0xfdf4e8, 0.6));
-  const sun = new THREE.DirectionalLight(0xfff8f0, 1.0);
-  sun.position.set(10, 16, 12); sun.castShadow = true;
-  sun.shadow.mapSize.set(1024,1024);
-  scene.add(sun);
-  const fill = new THREE.DirectionalLight(0xd0e8f0, 0.25);
-  fill.position.set(-8, -4, -10);
-  scene.add(fill);
-  const rim = new THREE.DirectionalLight(0xf8e8d0, 0.15);
-  rim.position.set(0, -10, 8);
-  scene.add(rim);
+canvas.addEventListener('pointerdown', e => { o.dragging=true; o.lx=e.clientX; o.ly=e.clientY; canvas.setPointerCapture(e.pointerId); });
+canvas.addEventListener('pointermove', e => {
+  if (!o.dragging) return;
+  o.th -= (e.clientX - o.lx) * 0.012;
+  o.ph = Math.max(0.1, Math.min(Math.PI-0.1, o.ph + (e.clientY - o.ly) * 0.012));
+  o.lx=e.clientX; o.ly=e.clientY; posCam();
+});
+canvas.addEventListener('pointerup', () => o.dragging = false);
+stage.addEventListener('wheel', e => {
+  e.preventDefault();
+  o.d = Math.max(5, Math.min(50, o.d + e.deltaY * 0.025));
+  posCam();
+}, { passive: false });
 
-  // Orbit
-  let o = {th:0.7, ph:0.6, d:14, dragging:false, lx:0, ly:0};
-  function positionCam(){
-    cam.position.set(
-      o.d*Math.sin(o.ph)*Math.sin(o.th),
-      o.d*Math.cos(o.ph),
-      o.d*Math.sin(o.ph)*Math.cos(o.th)
-    );
-    cam.lookAt(0,0,0);
-  }
-  positionCam();
+new ResizeObserver(() => {
+  renderer.setSize(stage.clientWidth, stage.clientHeight);
+  cam.aspect = stage.clientWidth / stage.clientHeight;
+  cam.updateProjectionMatrix();
+}).observe(stage);
+renderer.setSize(stage.clientWidth, stage.clientHeight);
+cam.aspect = stage.clientWidth / stage.clientHeight;
+cam.updateProjectionMatrix();
 
-  // Listen on CANVAS so overlay buttons outside it receive clicks freely
-  cvs.addEventListener('pointerdown', e=>{o.dragging=true;o.lx=e.clientX;o.ly=e.clientY;cvs.setPointerCapture(e.pointerId)});
-  cvs.addEventListener('pointermove', e=>{
-    if(!o.dragging) return;
-    o.th -= (e.clientX-o.lx)*.013;
-    o.ph = Math.max(.12, Math.min(Math.PI-.12, o.ph+(e.clientY-o.ly)*.013));
-    o.lx=e.clientX; o.ly=e.clientY; positionCam();
-  });
-  cvs.addEventListener('pointerup', ()=>o.dragging=false);
-  wrap.addEventListener('wheel', e=>{
-    e.preventDefault();
-    o.d = Math.max(4, Math.min(45, o.d+e.deltaY*.022));
-    positionCam();
-  },{passive:false});
+// Render loop
+(function loop(){ requestAnimationFrame(loop); renderer.render(scene, cam); })();
 
-  new ResizeObserver(()=>{
-    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
-    cam.aspect = wrap.clientWidth/wrap.clientHeight;
-    cam.updateProjectionMatrix();
-  }).observe(wrap);
-
-  let raf;
-  (function loop(){raf=requestAnimationFrame(loop);renderer.render(scene,cam)})();
-
-  return {
-    scene, cam,
-    reset(d=14){o.th=0.7;o.ph=0.6;o.d=d;positionCam()},
-    dispose(){cancelAnimationFrame(raf);renderer.dispose()}
-  };
+function resetCam(d=18) {
+  o.th=0.65; o.ph=0.58; o.d=d; posCam();
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // GEOMETRY HELPERS
-// ═══════════════════════════════════════════════════════════════════
-const _boxGeo  = new THREE.BoxGeometry(.90,.90,.90);
-const _edgeGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(.90,.90,.90));
+// ═══════════════════════════════════════════════
+const _bg  = new THREE.BoxGeometry(0.88, 0.88, 0.88);
+const _eg  = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.88, 0.88, 0.88));
 
-function unitCube(color, x, y, z){
-  const m = new THREE.Mesh(_boxGeo, new THREE.MeshLambertMaterial({color}));
+function makeCube(hexCol, x, y, z) {
+  const mat = new THREE.MeshLambertMaterial({ color: hexCol });
+  const m = new THREE.Mesh(_bg, mat);
   m.castShadow = m.receiveShadow = true;
-  m.position.set(x,y,z);
-  m.add(new THREE.LineSegments(_edgeGeo, new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:.10})));
-  return m;
+  m.position.set(x, y, z);
+  const edge = new THREE.LineSegments(_eg, new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.12 }));
+  m.add(edge);
+  return { mesh: m, mat };
 }
 
-// ─── Text sprite ──────────────────────────────────────────────────
-function makeSprite(text, opts={}){
-  const {
-    color='#1c1a16', bg='rgba(250,248,244,0.92)',
-    fontSize=28, bold=true, padding=10, maxW=220
-  } = opts;
+function makeIndepCube(hexCol, x, y, z) {
+  const geo = new THREE.BoxGeometry(0.88, 0.88, 0.88);
+  const mat = new THREE.MeshLambertMaterial({ color: hexCol });
+  const m = new THREE.Mesh(geo, mat);
+  m.castShadow = m.receiveShadow = true;
+  m.position.set(x, y, z);
+  const eg = new THREE.EdgesGeometry(geo);
+  const edge = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.12 }));
+  m.add(edge);
+  return { mesh: m, mat, geo, eg };
+}
 
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const font = `${bold?'700':'400'} ${fontSize}px "DM Mono", monospace`;
+// Text sprite
+function sprite(text, opts={}) {
+  const { color='#f0ece0', bg='rgba(8,7,10,0.88)', fs=24, bold=true } = opts;
+  const cv = document.createElement('canvas');
+  const ctx = cv.getContext('2d');
+  const font = `${bold?'700':'400'} ${fs}px "Space Mono", monospace`;
   ctx.font = font;
-
   const lines = text.split('\n');
-  const lineH = fontSize * 1.3;
-  const textW = Math.max(...lines.map(l=>ctx.measureText(l).width));
-  canvas.width  = Math.min(textW + padding*2, maxW*2);
-  canvas.height = lineH * lines.length + padding*1.5;
-
+  const lh = fs * 1.35;
+  const tw = Math.max(...lines.map(l=>ctx.measureText(l).width));
+  cv.width  = tw + 24;
+  cv.height = lh * lines.length + 16;
   ctx.font = font;
-  // Background
   ctx.fillStyle = bg;
-  roundRectCanvas(ctx, 0, 0, canvas.width, canvas.height, 8);
-  ctx.fill();
-  // Border
-  ctx.strokeStyle = 'rgba(28,26,22,0.15)';
-  ctx.lineWidth = 1.5;
-  roundRectCanvas(ctx, 0, 0, canvas.width, canvas.height, 8);
-  ctx.stroke();
-  // Text
-  ctx.fillStyle = color;
-  ctx.font = font;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  lines.forEach((l,i)=>{
-    ctx.fillText(l, canvas.width/2, padding*0.75 + lineH*(i+0.5));
-  });
-
-  const tex = new THREE.CanvasTexture(canvas);
-  const mat = new THREE.SpriteMaterial({map:tex, transparent:true, depthTest:false});
-  const sprite = new THREE.Sprite(mat);
-  const aspect = canvas.width / canvas.height;
-  sprite.scale.set(aspect * 1.6, 1.6, 1);
-  return sprite;
+  rrect(ctx, 0, 0, cv.width, cv.height, 7); ctx.fill();
+  ctx.strokeStyle = 'rgba(201,168,76,0.3)'; ctx.lineWidth=1;
+  rrect(ctx, 0, 0, cv.width, cv.height, 7); ctx.stroke();
+  ctx.fillStyle = color; ctx.textAlign='center'; ctx.textBaseline='middle';
+  lines.forEach((l,i)=>ctx.fillText(l, cv.width/2, 8 + lh*(i+0.5)));
+  const tex = new THREE.CanvasTexture(cv);
+  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
+  sp.scale.set(cv.width/cv.height * 1.8, 1.8, 1);
+  return sp;
 }
 
-function roundRectCanvas(ctx, x, y, w, h, r){
+function rrect(ctx,x,y,w,h,r) {
   ctx.beginPath();
   ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
   ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
@@ -624,391 +785,333 @@ function roundRectCanvas(ctx, x, y, w, h, r){
   ctx.closePath();
 }
 
-// Arrow sprite (dashed line + arrowhead via canvas texture)
-function makeArrow(from, to, color=0x1c1a16){
-  const pts = [new THREE.Vector3(...from), new THREE.Vector3(...to)];
-  const geo = new THREE.BufferGeometry().setFromPoints(pts);
-  const mat = new THREE.LineBasicMaterial({color, transparent:true, opacity:.55});
-  return new THREE.Line(geo, mat);
+function lineObj(from, to, col=0xc9a84c) {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from), new THREE.Vector3(...to)]);
+  return new THREE.Line(g, new THREE.LineBasicMaterial({color:col, transparent:true, opacity:0.5}));
 }
 
-// ─── Consecutive odds math ────────────────────────────────────────
-function oddsForN(n){
-  let c=1;
-  for(let k=1;k<n;k++) c+=2*k;
-  const out=[];
-  for(let i=0;i<n;i++){out.push(c);c+=2;}
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let activeTab = 'layers'; // must be declared before any build* calls
+const root = new THREE.Group();
+scene.add(root);
+root.rotation.y = 0;
+
+// Animate slow spin when idle
+let lastInteract = Date.now();
+canvas.addEventListener('pointerdown', () => lastInteract = Date.now());
+
+// subtle idle rotation
+;(function idleSpin(){
+  requestAnimationFrame(idleSpin);
+  if (Date.now() - lastInteract > 4000 && !o.dragging) {
+    o.th += 0.0015; posCam();
+  }
+})();
+
+// ═══════════════════════════════════════════════
+// TAB 1 — LAYERS
+// ═══════════════════════════════════════════════
+const layersGrp = new THREE.Group();
+root.add(layersGrp);
+
+let LN = 3, LShown = 3;
+let layerMeshes = [];
+
+function buildLayers() {
+  layersGrp.clear();
+  layerMeshes = [];
+  const off = -(LN-1)/2;
+  for (let z=0; z<LN; z++) {
+    const col = COLS[z % COLS.length];
+    const lay = [];
+    for (let y=0; y<LN; y++) {
+      for (let x=0; x<LN; x++) {
+        const c = makeIndepCube(col, off+x, off+z, off+y);
+        lay.push(c);
+      }
+    }
+    layerMeshes.push(lay);
+  }
+  applyLayerVis();
+}
+
+function applyLayerVis() {
+  layersGrp.clear();
+  for (let z=0; z<LN; z++) {
+    if (z < LShown) layerMeshes[z].forEach(c => layersGrp.add(c.mesh));
+  }
+  updateLayerUI();
+  updateMetaBR(LN*LN*LShown);
+}
+
+function updateLayerUI() {
+  document.getElementById('layerNv').textContent = LN;
+  document.getElementById('s-per-layer').textContent = LN*LN;
+  document.getElementById('s-layers-shown').textContent = LShown;
+  document.getElementById('s-total').textContent = LN*LN*LShown;
+  document.getElementById('s-formula').textContent = `= ${LShown} × ${LN*LN} = ${LShown===LN?LN+'³':LShown+'×'+LN+'²'}`;
+  document.getElementById('layer-counter').textContent = `${LShown} of ${LN} layers`;
+  document.getElementById('btn-add').disabled = LShown >= LN;
+  document.getElementById('btn-rm').disabled = LShown <= 0;
+  document.getElementById('meta-n').textContent = LN;
+
+  const list = document.getElementById('layer-list');
+  list.innerHTML = '';
+  for (let z=0; z<LN; z++) {
+    const col = COLS[z%COLS.length];
+    const el = document.createElement('div');
+    el.className = 'layer-item' + (z < LShown ? ' on' : '');
+    el.innerHTML = `<div class="layer-dot" style="background:${hex(col)}"></div><span>Layer ${z+1} — ${LN}×${LN} = ${LN*LN} cubes</span>`;
+    el.style.opacity = z < LShown ? '1' : '0.35';
+    el.addEventListener('click', () => { LShown = z+1; applyLayerVis(); });
+    list.appendChild(el);
+  }
+}
+
+document.getElementById('layerN').addEventListener('input', e => {
+  LN = +e.target.value; LShown = LN;
+  buildLayers(); resetCam(LN*3.6+7);
+});
+document.getElementById('btn-add').addEventListener('click', () => { if(LShown<LN){LShown++;applyLayerVis();}});
+document.getElementById('btn-rm').addEventListener('click', () => { if(LShown>0){LShown--;applyLayerVis();}});
+document.getElementById('reset-layers').addEventListener('click', () => resetCam(LN*3.6+7));
+
+buildLayers();
+
+// ═══════════════════════════════════════════════
+// TAB 2 — ODDS
+// ═══════════════════════════════════════════════
+const oddsGrp = new THREE.Group();
+root.add(oddsGrp);
+oddsGrp.visible = false;
+
+let ON = 3, OHi = -1;
+let oddFaceMats=[], oddEdgeMats=[], oddGroupOf=[], oddOrigHex=[];
+
+function oddsFor(n) {
+  let c = 1;
+  for (let k=1;k<n;k++) c += 2*k;
+  const out = [];
+  for (let i=0;i<n;i++) { out.push(c); c+=2; }
   return out;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// TAB 1 — LAYERS
-// ═══════════════════════════════════════════════════════════════════
-(function(){
-  const S = makeScene('c-layers','canvas-layers');
-  let N=3, shown=N;
-  const grp = new THREE.Group();
-  S.scene.add(grp);
-  let layers = []; // layers[z] = meshes[]
+function buildOdds() {
+  oddsGrp.children.forEach(obj=>obj.traverse(node=>{if(node.geometry)node.geometry.dispose();if(node.material)node.material.dispose();}));
+  oddsGrp.clear();
+  oddFaceMats=[]; oddEdgeMats=[]; oddGroupOf=[]; oddOrigHex=[];
 
-  function rebuild(){
-    grp.clear();
-    layers = [];
-    const off = -(N-1)/2;
-    for(let z=0;z<N;z++){
-      const col = LAYER_COLS[z%LAYER_COLS.length];
-      const lay = [];
-      for(let y=0;y<N;y++) for(let x=0;x<N;x++) lay.push(unitCube(col,off+x,off+z,off+y));
-      layers.push(lay);
+  const odds = oddsFor(ON);
+  const off = -(ON-1)/2;
+  const bounds=[0]; let cum=0;
+  odds.forEach(v=>{cum+=v;bounds.push(cum);});
+
+  let idx=0;
+  for (let y=0;y<ON;y++) for (let z=0;z<ON;z++) for (let x=0;x<ON;x++) {
+    let g=0;
+    for (;g<odds.length-1;g++) if(idx<bounds[g+1]) break;
+    const hexCol = COLS[g%COLS.length];
+    const c = makeIndepCube(hexCol, off+x, off+y, off+z);
+    const edgeMat = c.mesh.children[0].material;
+    oddsGrp.add(c.mesh);
+    oddFaceMats.push(c.mat);
+    oddEdgeMats.push(edgeMat);
+    oddGroupOf.push(g);
+    oddOrigHex.push(hexCol);
+    idx++;
+  }
+
+  OHi = -1;
+  updateOddsUI();
+  updateMetaBR(ON*ON*ON);
+}
+
+function applyOddsHi() {
+  oddFaceMats.forEach((mat,i)=>{
+    const em = oddEdgeMats[i];
+    const sel = (OHi===-1)||(oddGroupOf[i]===OHi);
+    if (sel) {
+      mat.color.setHex(oddOrigHex[i]);
+      mat.transparent=false; mat.opacity=1; mat.depthWrite=true; mat.needsUpdate=true;
+      em.color.setHex(0x000000); em.opacity=0.12; em.needsUpdate=true;
+    } else {
+      mat.transparent=true; mat.opacity=0; mat.depthWrite=false; mat.needsUpdate=true;
+      em.color.setHex(oddOrigHex[i]); em.opacity=0.22; em.needsUpdate=true;
     }
-    applyVis();
-  }
-
-  function applyVis(){
-    grp.clear();
-    for(let z=0;z<N;z++){
-      if(z<shown) layers[z].forEach(m=>grp.add(m));
-    }
-    updateStats();
-    updateList();
-  }
-
-  function updateStats(){
-    document.getElementById('layerNv').textContent = N;
-    document.getElementById('layer-stat-one').textContent = `${N} × ${N} = ${N*N}`;
-    document.getElementById('layer-stat-shown').textContent = shown;
-    document.getElementById('layer-stat-total').textContent = N*N*shown;
-    document.getElementById('layer-stat-formula').textContent = `= ${shown} × ${N*N} = ${shown > 0 ? (shown===N ? N+'³' : shown+'×'+N+'²') : '0'}`;
-    document.getElementById('layer-count-display').textContent = `${shown} of ${N} layers`;
-    document.getElementById('btn-add-layer').disabled = shown>=N;
-    document.getElementById('btn-remove-layer').disabled = shown<=0;
-  }
-
-  function updateList(){
-    const list = document.getElementById('layer-list');
-    list.innerHTML='';
-    for(let z=0;z<N;z++){
-      const col = LAYER_COLS[z%LAYER_COLS.length];
-      const el = document.createElement('div');
-      el.className = 'layer-item'+(z<shown?' active':'');
-      el.style.opacity = z<shown?'1':'0.45';
-      el.innerHTML=`<div class="layer-swatch" style="background:${hexCSS(col)}"></div><span>Layer ${z+1} — ${N}×${N} = ${N*N} cubes</span>`;
-      el.addEventListener('click',()=>{shown=z+1;applyVis();});
-      list.appendChild(el);
-    }
-  }
-
-  document.getElementById('layerN').addEventListener('input',e=>{N=+e.target.value;shown=N;rebuild();S.reset(N*3.8+6);});
-  document.getElementById('btn-add-layer').addEventListener('click',()=>{if(shown<N){shown++;applyVis();}});
-  document.getElementById('btn-remove-layer').addEventListener('click',()=>{if(shown>0){shown--;applyVis();}});
-  document.getElementById('reset-layers-cam').addEventListener('click',()=>S.reset(N*3.8+6));
-
-  rebuild(); S.reset(14);
-})();
-
-// ═══════════════════════════════════════════════════════════════════
-// TAB 2 — CONSECUTIVE ODDS
-// ═══════════════════════════════════════════════════════════════════
-(function(){
-  const S = makeScene('c-odds','canvas-odds');
-  // Enable proper transparency sorting
-  S.scene.renderer && (S.scene.renderer.sortObjects = true);
-
-  let N = 3, hilighted = -1;
-  const grp = new THREE.Group();
-  S.scene.add(grp);
-
-  // Per-cell storage
-  let faceMats  = [];  // MeshLambertMaterial per cell
-  let edgeMats  = [];  // LineBasicMaterial per cell
-  let grpOfCell = [];  // group index per cell
-  let origHex   = [];  // original hex color per cell
-
-  function makeCellMesh(hex, x, y, z) {
-    // Each cell gets its OWN geometries + materials so we can mutate independently
-    const geo  = new THREE.BoxGeometry(0.90, 0.90, 0.90);
-    const mat  = new THREE.MeshLambertMaterial({ color: hex });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.castShadow = mesh.receiveShadow = true;
-    mesh.position.set(x, y, z);
-
-    const eGeo = new THREE.EdgesGeometry(geo);
-    const eMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.10 });
-    mesh.add(new THREE.LineSegments(eGeo, eMat));
-
-    return { mesh, mat, eMat };
-  }
-
-  function rebuild() {
-    // Dispose old geometries/materials
-    grp.children.forEach(obj => {
-      obj.traverse(o => {
-        if (o.geometry) o.geometry.dispose();
-        if (o.material) o.material.dispose();
-      });
-    });
-    grp.clear();
-    faceMats = []; edgeMats = []; grpOfCell = []; origHex = [];
-
-    const odds   = oddsForN(N);
-    const off    = -(N - 1) / 2;
-    const total  = N * N * N;
-
-    // Cumulative boundaries
-    const bounds = [0]; let cum = 0;
-    odds.forEach(o => { cum += o; bounds.push(cum); });
-
-    // Scan order: y → z → x (matches original)
-    let idx = 0;
-    for (let y = 0; y < N; y++) {
-      for (let z = 0; z < N; z++) {
-        for (let x = 0; x < N; x++) {
-          // Find group
-          let g = 0;
-          for (; g < odds.length - 1; g++) if (idx < bounds[g + 1]) break;
-
-          const hex = ODDS_COLS[g % ODDS_COLS.length];
-          const { mesh, mat, eMat } = makeCellMesh(hex, off + x, off + y, off + z);
-          grp.add(mesh);
-          faceMats.push(mat);
-          edgeMats.push(eMat);
-          grpOfCell.push(g);
-          origHex.push(hex);
-          idx++;
-        }
-      }
-    }
-
-    hilighted = -1;
-    updatePanel(odds);
-    S.reset(N * 3.8 + 6);
-  }
-
-  function applyHighlight() {
-    faceMats.forEach((mat, i) => {
-      const eMat   = edgeMats[i];
-      const isSelected = (hilighted === -1) || (grpOfCell[i] === hilighted);
-
-      if (isSelected) {
-        // Fully visible — restore original colour
-        mat.color.setHex(origHex[i]);
-        mat.transparent = false;
-        mat.opacity     = 1;
-        mat.depthWrite  = true;
-        mat.needsUpdate = true;
-        eMat.color.setHex(0x000000);
-        eMat.opacity    = 0.12;
-        eMat.needsUpdate = true;
-      } else {
-        // Ghost — transparent face, coloured wire outline
-        mat.transparent = true;
-        mat.opacity     = 0;
-        mat.depthWrite  = false;
-        mat.needsUpdate = true;
-        eMat.color.setHex(origHex[i]);
-        eMat.opacity    = 0.20;
-        eMat.needsUpdate = true;
-      }
-    });
-  }
-
-  function updatePanel(odds) {
-    if (!odds) odds = oddsForN(N);
-    document.getElementById('oddsNv').textContent = N;
-    document.getElementById('odds-identity').textContent =
-      odds.join(' + ') + ' = ' + N ** 3 + ' = ' + N + '³';
-    const midIdx = Math.floor((N - 1) / 2);
-    const isOddN = N % 2 === 1;
-    const mid    = isOddN
-      ? odds[midIdx] + ' = ' + N + '²'
-      : '(' + odds[midIdx] + '+' + odds[midIdx + 1] + ')/2 = ' + N + '²';
-    document.getElementById('odds-middle').textContent = mid;
-
-    // Overlay buttons
-    const overlay = document.getElementById('odds-overlay');
-    overlay.innerHTML = '';
-    odds.forEach((o, i) => {
-      const col    = ODDS_COLS[i % ODDS_COLS.length];
-      const colHex = hexCSS(col);
-      const isMid  = isOddN ? (i === midIdx) : (i === midIdx || i === midIdx + 1);
-      const btn    = document.createElement('button');
-      btn.className = 'odds-btn' + (hilighted === i ? ' active-odd' : '');
-      btn.style.borderColor = hilighted === i ? colHex : colHex + '80';
-      btn.innerHTML = `
-        <div class="odds-btn-swatch" style="background:${colHex}"></div>
-        <span class="odds-btn-num" style="color:${colHex}">${o} cells</span>
-        ${isMid ? `<span class="odds-btn-tag">middle = n²</span>` : ''}
-      `;
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        hilighted = (hilighted === i) ? -1 : i;
-        applyHighlight();
-        updatePanel(odds);
-      });
-      overlay.appendChild(btn);
-    });
-  }
-
-  document.getElementById('oddsN').addEventListener('input', e => {
-    N = +e.target.value;
-    rebuild();
   });
-  document.getElementById('reset-odds-cam').addEventListener('click', () => {
-    hilighted = -1;
-    applyHighlight();
-    updatePanel();
-    S.reset(N * 3.8 + 6);
+}
+
+function updateOddsUI() {
+  const odds = oddsFor(ON);
+  document.getElementById('oddsNv').textContent = ON;
+  document.getElementById('meta-n').textContent = ON;
+  document.getElementById('s-odds-identity').textContent = odds.join(' + ') + ' = ' + ON**3 + ' = ' + ON + '³';
+  const mi = Math.floor((ON-1)/2);
+  document.getElementById('s-odds-mid').textContent = (ON%2===1)
+    ? odds[mi]+' = '+ON+'²'
+    : '('+odds[mi]+'+'+odds[mi+1]+')/2 = '+ON+'²';
+
+  // legend
+  const leg = document.getElementById('odds-legend');
+  leg.innerHTML='';
+  odds.forEach((v,i)=>{
+    const col=COLS_CSS[i%COLS_CSS.length];
+    const isMid = (ON%2===1 && i===mi)||(ON%2===0 && (i===mi||i===mi+1));
+    const row=document.createElement('div');
+    row.className='odds-row'+(OHi===i?' on':'');
+    row.style.borderColor=OHi===i?col:(col+'55');
+    row.innerHTML=`<div class="odds-dot" style="background:${col}"></div><span class="odds-num" style="color:${col}">${v} cells</span>${isMid?'<span class="odds-badge">n²</span>':''}`;
+    row.addEventListener('click',()=>{OHi=(OHi===i)?-1:i;applyOddsHi();updateOddsUI();updateOverlay();});
+    leg.appendChild(row);
   });
 
-  rebuild();
-})();
+  updateOverlay();
+}
 
-// ═══════════════════════════════════════════════════════════════════
-// TAB 3 — TAXICAB 1729
-// ═══════════════════════════════════════════════════════════════════
-(function(){
-  const S = makeScene('c-taxi','canvas-taxi');
-  let way=1;
-  const grp = new THREE.Group();
-  S.scene.add(grp);
-
-  // ─── Build a solid cube with edge dimension labels ────────────
-  function labeledCube(sideLen, color, cx, cy, cz, labelLines, labelColor='#1c1a16'){
-    const g = new THREE.Group();
-    g.position.set(cx,cy,cz);
-
-    // Solid cube mesh
-    const geo = new THREE.BoxGeometry(sideLen, sideLen, sideLen);
-    const mat = new THREE.MeshLambertMaterial({color, transparent:true, opacity:0.80});
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.castShadow=true; mesh.receiveShadow=true;
-    g.add(mesh);
-
-    // Wireframe edges
-    const wGeo = new THREE.EdgesGeometry(geo);
-    const wMat = new THREE.LineBasicMaterial({color, transparent:true, opacity:0.6});
-    g.add(new THREE.LineSegments(wGeo, wMat));
-
-    // Internal grid lines (only for small cubes, not 12)
-    if(sideLen <= 9){
-      const lineMat = new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.06});
-      const s = sideLen;
-      for(let i=1;i<s;i++){
-        for(let axis=0;axis<3;axis++){
-          const pts=[];
-          if(axis===0){pts.push(new THREE.Vector3(-s/2+i,-s/2,-s/2),new THREE.Vector3(-s/2+i,s/2,-s/2));}
-          else if(axis===1){pts.push(new THREE.Vector3(-s/2,-s/2+i,-s/2),new THREE.Vector3(s/2,-s/2+i,-s/2));}
-          else{pts.push(new THREE.Vector3(-s/2,-s/2,-s/2+i),new THREE.Vector3(s/2,-s/2,-s/2+i));}
-          const lg=new THREE.BufferGeometry().setFromPoints(pts);
-          g.add(new THREE.Line(lg, lineMat));
-        }
-      }
-    }
-
-    // Dimension edge line (along top-front edge)
-    const hl = sideLen/2;
-    const dimLine = makeArrow([-hl, hl+0.3, hl], [hl, hl+0.3, hl], 0x1c1a16);
-    g.add(dimLine);
-    // Tick marks at ends
-    [[-hl, hl],[hl, hl]].forEach(([ex,ey])=>{
-      const tick=makeArrow([ex, ey+0.6, hl],[ex, ey, hl],0x1c1a16);
-      g.add(tick);
-    });
-
-    // Main label sprite — positioned above-front
-    const labelSprite = makeSprite(labelLines.join('\n'), {
-      color: labelColor,
-      bg: 'rgba(250,248,244,0.95)',
-      fontSize: 24,
-      bold: true
-    });
-    labelSprite.position.set(0, hl+1.8, hl+0.5);
-    g.add(labelSprite);
-
-    // Volume label below the cube
-    const volSprite = makeSprite('= '+sideLen+'³ = '+(sideLen**3).toLocaleString('en-IN'), {
-      color: labelColor,
-      bg: 'rgba(250,248,244,0.90)',
-      fontSize: 20,
-      bold: false
-    });
-    volSprite.position.set(0, -hl-1.6, 0);
-    g.add(volSprite);
-
-    return g;
-  }
-
-  function buildTaxi(){
-    grp.clear();
-
-    const [a,b] = way===1?[1,12]:[9,10];
-    const colA = PAL.teal;
-    const colB = PAL.rust;
-    const gap = 1.8;
-
-    // Position cubes: total width = a+b+gap, center at 0
-    const aX = -(gap/2 + b/2);
-    const bX =  (gap/2 + a/2);
-    // Align bottoms
-    const aY = (b-a)/2; // raise A so bottoms align
-    const bY = 0;
-
-    const cubeA = labeledCube(a, colA, aX, aY, 0,
-      ['a = '+a, 'side = '+a],
-      hexCSS(colA)
-    );
-    const cubeB = labeledCube(b, colB, bX, bY, 0,
-      ['b = '+b, 'side = '+b],
-      hexCSS(colB)
-    );
-    grp.add(cubeA);
-    grp.add(cubeB);
-
-    // '+' sprite between cubes
-    const plus = makeSprite('+', {color:'#4a4640', bg:'rgba(250,248,244,0)', fontSize:36, bold:true});
-    plus.position.set((aX+bX)/2, Math.max(a,b)/2+0.5, Math.max(a,b)/2+0.5);
-    grp.add(plus);
-
-    // '= 1729' label below
-    const sumSprite = makeSprite(a+'³ + '+b+'³ = 1729', {
-      color:'#1c1a16', bg:'rgba(250,248,244,0.95)', fontSize:24, bold:true
-    });
-    sumSprite.position.set((aX+bX)/2, -Math.max(a,b)/2-3.0, 0);
-    grp.add(sumSprite);
-
-    // Update UI
-    const btn = document.getElementById('taxi-way-btn');
-    btn.textContent = way===1?'Show way 2: 9³ + 10³':'Show way 1: 1³ + 12³';
-    ['1','2'].forEach(w=>{
-      document.getElementById('taxi-row-'+w).classList.toggle('active-way',+w===way);
-    });
-
-    const maxS = Math.max(a,b);
-    S.reset(maxS*1.6+8);
-  }
-
-  document.getElementById('taxi-way-btn').addEventListener('click',()=>{way=way===1?2:1;buildTaxi();});
-  document.getElementById('reset-taxi-cam').addEventListener('click',()=>{const b=way===1?12:10;S.reset(b*1.6+8);});
-  ['taxi-row-1','taxi-row-2'].forEach(id=>{
-    document.getElementById(id).addEventListener('click',()=>{
-      way=+document.getElementById(id).dataset.way;buildTaxi();
-    });
+function updateOverlay() {
+  const odds = oddsFor(ON);
+  const ov = document.getElementById('odds-canvas-overlay');
+  ov.innerHTML='';
+  if (activeTab!=='odds') return;
+  const mi=Math.floor((ON-1)/2);
+  odds.forEach((v,i)=>{
+    const col=COLS_CSS[i%COLS_CSS.length];
+    const isMid=(ON%2===1&&i===mi)||(ON%2===0&&(i===mi||i===mi+1));
+    const btn=document.createElement('button');
+    btn.className='oco-btn'+(OHi===i?' on':'');
+    btn.style.borderColor=OHi===i?col:(col+'55');
+    btn.style.color=col;
+    btn.innerHTML=`<div class="oco-dot" style="background:${col}"></div>${v} cells${isMid?'<span class="oco-badge">n²</span>':''}`;
+    btn.addEventListener('click',e=>{e.stopPropagation();OHi=(OHi===i)?-1:i;applyOddsHi();updateOddsUI();});
+    ov.appendChild(btn);
   });
+}
 
-  buildTaxi();
-})();
+document.getElementById('oddsN').addEventListener('input', e => {
+  ON = +e.target.value;
+  buildOdds(); resetCam(ON*3.6+7);
+});
+document.getElementById('reset-odds').addEventListener('click', () => {
+  OHi=-1; applyOddsHi(); updateOddsUI(); resetCam(ON*3.6+7);
+});
 
-// ═══════════════════════════════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════════════════════════════
-document.querySelectorAll('.tab').forEach(tab=>{
-  tab.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    tab.classList.add('active');
-    document.getElementById('view-'+tab.dataset.tab).classList.add('active');
+buildOdds();
+
+// ═══════════════════════════════════════════════
+// TAB 3 — TAXI
+// ═══════════════════════════════════════════════
+const taxiGrp = new THREE.Group();
+root.add(taxiGrp);
+taxiGrp.visible = false;
+
+let TW = 1;
+
+function buildSolidCube(side, hexCol, ox, oy, oz) {
+  const g = new THREE.Group();
+  g.position.set(ox, oy, oz);
+  const geo = new THREE.BoxGeometry(side, side, side);
+  const mat = new THREE.MeshLambertMaterial({ color: hexCol, transparent:true, opacity:0.78 });
+  const m = new THREE.Mesh(geo, mat);
+  m.castShadow = m.receiveShadow = true;
+  g.add(m);
+  const eg = new THREE.EdgesGeometry(geo);
+  g.add(new THREE.LineSegments(eg, new THREE.LineBasicMaterial({color:hexCol, transparent:true, opacity:0.6})));
+
+  // grid lines inside
+  if (side <= 10) {
+    const lm = new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.05});
+    const s=side;
+    for (let i=1;i<s;i++) {
+      const dirs=[[[-s/2+i,-s/2,-s/2],[-s/2+i,s/2,-s/2]],[[-s/2,-s/2+i,-s/2],[s/2,-s/2+i,-s/2]],[[-s/2,-s/2,-s/2+i],[s/2,-s/2,-s/2+i]]];
+      dirs.forEach(([a,b])=>g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a),new THREE.Vector3(...b)]),lm)));
+    }
+  }
+
+  // dimension line & label
+  const hl = side/2;
+  g.add(lineObj([-hl,hl+0.25,hl],[hl,hl+0.25,hl], hexCol));
+  const sp = sprite(side+'³ = '+(side**3).toLocaleString(), {color:hex(hexCol), bg:'rgba(8,7,10,0.9)', fs:22});
+  sp.position.set(0, hl+2.0, 0);
+  g.add(sp);
+  const sp2 = sprite('side = '+side, {color:'#f0ece0', bg:'rgba(8,7,10,0.85)', fs:18, bold:false});
+  sp2.position.set(0, -hl-1.5, 0);
+  g.add(sp2);
+
+  return g;
+}
+
+function buildTaxi() {
+  taxiGrp.clear();
+  const [a,b] = TW===1 ? [1,12] : [9,10];
+  const colA = C.teal, colB = C.rust;
+  const gap = 1.5;
+  const aX = -(gap/2+b/2), bX = gap/2+a/2;
+  const aY = (b-a)/2;
+  taxiGrp.add(buildSolidCube(a, colA, aX, aY, 0));
+  taxiGrp.add(buildSolidCube(b, colB, bX, 0, 0));
+
+  // + sprite
+  const plus = sprite('+', {color:'#f0ece0',bg:'rgba(8,7,10,0)',fs:40,bold:true});
+  plus.position.set((aX+bX)/2, Math.max(a,b)/2+1.0, Math.max(a,b)/2+1.0);
+  taxiGrp.add(plus);
+
+  // sum sprite
+  const eq = sprite(a+'³ + '+b+'³ = 1729', {color:'#c9a84c',bg:'rgba(8,7,10,0.92)',fs:24});
+  eq.position.set((aX+bX)/2, -Math.max(a,b)/2-3.0, 0);
+  taxiGrp.add(eq);
+
+  // UI
+  ['1','2'].forEach(w=>{
+    document.getElementById('taxi-r'+w).classList.toggle('on', +w===TW);
+  });
+  updateMetaBR(a**3+b**3);
+  resetCam(Math.max(a,b)*1.65+9);
+}
+
+['taxi-r1','taxi-r2'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',()=>{
+    TW=+document.getElementById(id).dataset.w; buildTaxi();
   });
 });
+document.getElementById('reset-taxi').addEventListener('click',()=>resetCam(Math.max(...(TW===1?[1,12]:[9,10]))*1.65+9));
+
+buildTaxi();
+
+// ═══════════════════════════════════════════════
+// META HELPERS
+// ═══════════════════════════════════════════════
+function updateMetaBR(n) {
+  const label = activeTab==='taxi' ? 'Sum' : 'Total cubes';
+  document.getElementById('meta-br').innerHTML = label+' · <span>'+n.toLocaleString()+'</span>';
+}
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function setTab(t) {
+  activeTab = t;
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));
+
+  layersGrp.visible = t==='layers';
+  oddsGrp.visible   = t==='odds';
+  taxiGrp.visible   = t==='taxi';
+
+  document.getElementById('meta-mode').textContent = t.toUpperCase();
+
+  if (t==='layers') { updateLayerUI(); updateMetaBR(LN*LN*LShown); resetCam(LN*3.6+7); }
+  if (t==='odds')   { updateOddsUI(); updateOverlay(); updateMetaBR(ON**3); resetCam(ON*3.6+7); }
+  if (t==='taxi')   { document.getElementById('odds-canvas-overlay').innerHTML=''; updateMetaBR(1729); resetCam(12*1.65+9); }
+  if (t!=='odds')   { document.getElementById('odds-canvas-overlay').innerHTML=''; }
+}
+
+document.querySelectorAll('.tab').forEach(b=>{
+  b.addEventListener('click', () => setTab(b.dataset.t));
+});
+
+setTab('layers');
 </script>
 </body>
 </html>
