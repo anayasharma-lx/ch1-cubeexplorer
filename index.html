@@ -8,524 +8,233 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#08070a;--surface:#0f0e13;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --gold:#c9a84c;--gold2:#e8c96a;--gold-dim:rgba(201,168,76,0.15);--gold-glow:rgba(201,168,76,0.25);
+  --text:#f0ece0;--text2:rgba(240,236,224,0.55);--text3:rgba(240,236,224,0.3);
+  --teal:#4ecdc4;--rust:#e8604c;--sage:#7bc67a;--violet:#9b7fe8;--ocean:#4a8fc0;
+  --mono:'Space Mono',monospace;--serif:'Instrument Serif',Georgia,serif;--sans:'Syne',sans-serif;
+  --panel-w:280px;
+}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--text);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 
-:root {
-  --bg: #08070a;
-  --surface: #0f0e13;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --gold: #c9a84c;
-  --gold2: #e8c96a;
-  --gold-dim: rgba(201,168,76,0.15);
-  --gold-glow: rgba(201,168,76,0.25);
-  --text: #f0ece0;
-  --text2: rgba(240,236,224,0.55);
-  --text3: rgba(240,236,224,0.3);
-  --teal: #4ecdc4;
-  --rust: #e8604c;
-  --sage: #7bc67a;
-  --violet: #9b7fe8;
-  --mono: 'Space Mono', monospace;
-  --serif: 'Instrument Serif', Georgia, serif;
-  --sans: 'Syne', sans-serif;
-}
+/* ── DESKTOP: side-by-side ── */
+#app{position:fixed;inset:0;display:grid;grid-template-columns:var(--panel-w) 1fr}
 
-html, body {
-  width: 100%; height: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--sans);
-  overflow: hidden;
+/* ── LEFT PANEL ── */
+#panel{
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;position:relative;z-index:10;
 }
+.panel-top{padding:22px 20px 16px;border-bottom:1px solid var(--border)}
+.chapter-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:8px;display:flex;align-items:center;gap:8px;
+}
+.chapter-label::before{content:'';display:block;width:16px;height:1px;background:var(--gold)}
+h1{font-family:var(--serif);font-size:24px;font-weight:400;line-height:1.15;color:var(--text);margin-bottom:6px}
+h1 em{font-style:italic;color:var(--gold2)}
+.subtitle{font-family:var(--mono);font-size:11px;color:var(--text3);line-height:1.7}
 
-/* ── LAYOUT ─────────────────────────────────────── */
-#app {
-  position: fixed; inset: 0;
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  grid-template-rows: 1fr;
+/* ── TABS ── */
+.tabs{display:flex;padding:10px 14px 0;gap:2px;flex-shrink:0}
+.tab{
+  flex:1;padding:9px 6px;border:none;background:transparent;color:var(--text3);
+  font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;border-bottom:1.5px solid transparent;transition:all .2s;text-align:center;
 }
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
-/* ── LEFT PANEL ─────────────────────────────────── */
-#panel {
-  background: var(--surface);
-  border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  position: relative;
-  z-index: 10;
+.tab-body{
+  flex:1;overflow-y:auto;overflow-x:hidden;padding:18px 18px 20px;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
 }
+.pane{display:none}.pane.active{display:block}
 
-.panel-top {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid var(--border);
+/* ── CONCEPT ── */
+.concept{
+  font-family:var(--serif);font-size:13.5px;font-style:italic;line-height:1.75;
+  color:var(--text2);border-left:2px solid var(--gold);padding-left:13px;margin-bottom:20px;
 }
+.concept strong{font-style:normal;color:var(--gold2);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 
-.chapter-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.chapter-label::before {
-  content: '';
-  display: block;
-  width: 18px; height: 1px;
-  background: var(--gold);
-}
+/* ── CONTROLS ── */
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.ctrl-label{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);white-space:nowrap}
+.ctrl-row input[type=range]{flex:1;-webkit-appearance:none;height:2px;background:var(--border2);border-radius:1px;outline:none;cursor:pointer}
+.ctrl-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold-glow);cursor:pointer}
+.ctrl-val{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--gold);min-width:26px;text-align:right}
 
-h1 {
-  font-family: var(--serif);
-  font-size: 28px;
-  font-weight: 400;
-  line-height: 1.15;
-  color: var(--text);
-  margin-bottom: 8px;
-}
-h1 em {
-  font-style: italic;
-  color: var(--gold2);
-}
+/* ── STATS ── */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:16px}
+.stat-card{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.stat-card.span2{grid-column:span 2}
+.stat-card.gold-card{background:var(--gold-dim);border-color:rgba(201,168,76,0.3)}
+.stat-lbl{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:4px}
+.stat-val{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text);line-height:1.1}
+.gold-card .stat-val{color:var(--gold2)}
+.stat-sub{font-family:var(--mono);font-size:10px;color:var(--text3);margin-top:3px}
 
-.subtitle {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-  line-height: 1.7;
-  letter-spacing: .3px;
+/* ── LAYER BUTTONS ── */
+.layer-nav{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.icn-btn{
+  width:36px;height:36px;border-radius:6px;border:1px solid var(--border2);background:transparent;
+  color:var(--text2);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;font-family:var(--mono);flex-shrink:0;
 }
+.icn-btn:hover{border-color:var(--gold);color:var(--gold)}
+.icn-btn:disabled{opacity:.25;cursor:default}
+.icn-btn.add{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.icn-btn.add:hover{background:var(--gold2)}
+.layer-counter{flex:1;text-align:center;font-family:var(--mono);font-size:11px;color:var(--text2);background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:7px}
 
-/* ── TABS ───────────────────────────────────────── */
-.tabs {
-  display: flex;
-  padding: 12px 16px 0;
-  gap: 2px;
-  flex-shrink: 0;
+.layer-list{display:flex;flex-direction:column;gap:3px;max-height:130px;overflow-y:auto;margin-bottom:12px}
+.layer-item{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);
+  border-radius:6px;font-family:var(--mono);font-size:11px;color:var(--text3);cursor:pointer;transition:all .12s;
 }
+.layer-item:hover{border-color:var(--border2);color:var(--text2)}
+.layer-item.on{border-color:rgba(201,168,76,0.35);color:var(--text);background:var(--gold-dim)}
+.layer-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
 
-.tab {
-  flex: 1;
-  padding: 8px 6px;
-  border: none;
-  background: transparent;
-  color: var(--text3);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
-  border-bottom: 1.5px solid transparent;
-  transition: all .2s;
-  text-align: center;
-}
-.tab:hover { color: var(--text2); }
-.tab.active {
-  color: var(--gold);
-  border-bottom-color: var(--gold);
-}
+/* ── ODDS ── */
+.odds-legend{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.odds-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .14s}
+.odds-row:hover{border-color:var(--border2)}
+.odds-row.on{border-width:1.5px}
+.odds-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.odds-num{font-family:var(--mono);font-size:13px;font-weight:700;flex:1}
+.odds-badge{font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:10px;background:var(--gold-dim);color:var(--gold)}
 
-.tab-body {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 20px 20px 24px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border2) transparent;
-}
+/* ── TAXI ── */
+.taxi-row{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:all .15s;margin-bottom:8px}
+.taxi-row:hover{border-color:var(--border2)}
+.taxi-row.on{border-color:rgba(201,168,76,0.4);background:var(--gold-dim)}
+.taxi-tag{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3)}
+.taxi-eq{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--text)}
+.taxi-sub{font-family:var(--mono);font-size:11px;color:var(--text3)}
 
-.pane { display: none; }
-.pane.active { display: block; }
+/* ── RESET ── */
+.reset-btn{
+  width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;background:transparent;
+  color:var(--text3);font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  cursor:pointer;transition:all .15s;margin-top:4px;
+}
+.reset-btn:hover{border-color:var(--border2);color:var(--text2)}
 
-/* ── CONCEPT TEXT ───────────────────────────────── */
-.concept {
-  font-family: var(--serif);
-  font-size: 14.5px;
-  font-style: italic;
-  line-height: 1.75;
-  color: var(--text2);
-  border-left: 2px solid var(--gold);
-  padding-left: 14px;
-  margin-bottom: 22px;
-}
-.concept strong {
-  font-style: normal;
-  color: var(--gold2);
-  font-family: var(--sans);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: .5px;
-  text-transform: uppercase;
-}
+/* ── CANVAS ── */
+#stage{position:relative;overflow:hidden;background:var(--bg)}
+#stage canvas{display:block;width:100%!important;height:100%!important}
 
-/* ── CONTROLS ───────────────────────────────────── */
-.ctrl-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 18px;
+.meta{
+  position:absolute;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--text3);pointer-events:none;line-height:1.8;
 }
-.ctrl-label {
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text3);
-  white-space: nowrap;
-}
-.ctrl-row input[type=range] {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 2px;
-  background: var(--border2);
-  border-radius: 1px;
-  outline: none;
-  cursor: pointer;
-}
-.ctrl-row input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 8px var(--gold-glow);
-  cursor: pointer;
-}
-.ctrl-val {
-  font-family: var(--mono);
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--gold);
-  min-width: 24px;
-  text-align: right;
-}
+.meta-tl{top:16px;left:20px}
+.meta-tr{top:16px;right:20px;text-align:right}
+.meta-bl{bottom:16px;left:20px}
+.meta-br{bottom:16px;right:20px;text-align:right}
+.meta span{color:var(--gold)}
 
-/* ── STATS ──────────────────────────────────────── */
-.stat-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  margin-bottom: 18px;
+#drag-hint{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--text3);pointer-events:none;animation:fadeHint 3s ease forwards;white-space:nowrap;
 }
-.stat-card {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 11px 13px;
-}
-.stat-card.span2 { grid-column: span 2; }
-.stat-card.gold-card {
-  background: var(--gold-dim);
-  border-color: rgba(201,168,76,0.3);
-}
-.stat-lbl {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 5px;
-}
-.stat-val {
-  font-family: var(--mono);
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1.1;
-}
-.gold-card .stat-val { color: var(--gold2); }
-.stat-sub {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--text3);
-  margin-top: 3px;
-}
+@keyframes fadeHint{0%{opacity:0}10%{opacity:1}70%{opacity:1}100%{opacity:0}}
 
-/* ── LAYER BUTTONS ──────────────────────────────── */
-.layer-nav {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 14px;
+#odds-canvas-overlay{
+  position:absolute;top:16px;left:20px;display:flex;flex-direction:column;gap:5px;pointer-events:none;
 }
-.icn-btn {
-  width: 34px; height: 34px;
-  border-radius: 6px;
-  border: 1px solid var(--border2);
-  background: transparent;
-  color: var(--text2);
-  font-size: 18px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .15s;
-  font-family: var(--mono);
-  flex-shrink: 0;
+.oco-btn{
+  display:flex;align-items:center;gap:7px;padding:6px 12px 6px 9px;border-radius:20px;border:1.5px solid;
+  font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;pointer-events:all;
+  transition:all .15s;background:rgba(8,7,10,0.82);backdrop-filter:blur(6px);white-space:nowrap;
 }
-.icn-btn:hover { border-color: var(--gold); color: var(--gold); }
-.icn-btn:disabled { opacity: .25; cursor: default; }
-.icn-btn.add { background: var(--gold); border-color: var(--gold); color: var(--bg); }
-.icn-btn.add:hover { background: var(--gold2); }
-.layer-counter {
-  flex: 1;
-  text-align: center;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--text2);
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 7px;
-}
+.oco-btn:hover{transform:translateX(3px)}
+.oco-btn.on{transform:translateX(5px)}
+.oco-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.oco-badge{font-size:8px;letter-spacing:.8px;text-transform:uppercase;padding:2px 6px;border-radius:8px;background:var(--gold-dim);color:var(--gold)}
 
-.layer-list {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  max-height: 140px;
-  overflow-y: auto;
-  margin-bottom: 14px;
-}
-.layer-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 10px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--text3);
-  cursor: pointer;
-  transition: all .12s;
-}
-.layer-item:hover { border-color: var(--border2); color: var(--text2); }
-.layer-item.on { border-color: rgba(201,168,76,0.35); color: var(--text); background: var(--gold-dim); }
-.layer-dot { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+#grain{position:fixed;inset:0;pointer-events:none;z-index:999;opacity:.018;
+background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-/* ── ODDS BUTTONS ───────────────────────────────── */
-.odds-legend {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: 14px;
-}
-.odds-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all .14s;
-}
-.odds-row:hover { border-color: var(--border2); }
-.odds-row.on { border-width: 1.5px; }
-.odds-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.odds-num { font-family: var(--mono); font-size: 13px; font-weight: 700; flex: 1; }
-.odds-badge {
-  font-family: var(--mono);
-  font-size: 8px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 2px 6px;
-  border-radius: 10px;
-  background: var(--gold-dim);
-  color: var(--gold);
-}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-/* ── TAXI ROWS ──────────────────────────────────── */
-.taxi-row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all .15s;
-  margin-bottom: 8px;
+/* ══════════════════════════════════════════
+   MOBILE / TABLET  (≤ 768px)
+   Panel stacks above the canvas.
+   Canvas gets a fixed height, panel scrolls.
+══════════════════════════════════════════ */
+@media (max-width:768px){
+  html,body{overflow:auto;height:auto}
+  #app{
+    position:static;display:flex;flex-direction:column;min-height:100dvh;
+  }
+  #panel{
+    width:100%;max-width:100%;border-right:none;border-bottom:1px solid var(--border);
+    overflow:visible;flex-shrink:0;
+  }
+  .tab-body{overflow:visible;max-height:none;padding:14px 16px 16px}
+  .layer-list{max-height:none}
+  #stage{
+    width:100%;height:56vw;min-height:260px;max-height:480px;
+    flex-shrink:0;
+  }
+  .meta-tl,.meta-tr,.meta-bl,.meta-br{font-size:9px;letter-spacing:1px}
+  .meta-tl{top:10px;left:12px}
+  .meta-tr{top:10px;right:12px}
+  .meta-bl{bottom:10px;left:12px}
+  .meta-br{bottom:10px;right:12px}
+  h1{font-size:22px}
+  .ctrl-val{font-size:20px}
+  .stat-val{font-size:16px}
+  .odds-num{font-size:13px}
+  .oco-btn{font-size:11px;padding:5px 10px 5px 8px}
+  #drag-hint{font-size:9px;bottom:10px}
 }
-.taxi-row:hover { border-color: var(--border2); }
-.taxi-row.on { border-color: rgba(201,168,76,0.4); background: var(--gold-dim); }
-.taxi-tag { font-family: var(--mono); font-size: 8px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text3); }
-.taxi-eq { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--text); }
-.taxi-sub { font-family: var(--mono); font-size: 10px; color: var(--text3); }
-
-/* ── RESET BUTTON ───────────────────────────────── */
-.reset-btn {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  background: transparent;
-  color: var(--text3);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all .15s;
-  margin-top: 4px;
+@media (max-width:480px){
+  h1{font-size:20px}
+  .panel-top{padding:16px 16px 12px}
+  .tabs{padding:8px 12px 0}
+  .tab{font-size:9px;padding:8px 4px}
+  .chapter-label{font-size:9px}
+  .concept{font-size:13px}
+  .stat-val{font-size:15px}
+  .stat-lbl{font-size:9px}
+  .taxi-eq{font-size:13px}
 }
-.reset-btn:hover { border-color: var(--border2); color: var(--text2); }
-
-/* ── CANVAS AREA ─────────────────────────────────── */
-#stage {
-  position: relative;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-#stage canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Corner metadata */
-.meta {
-  position: absolute;
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text3);
-  pointer-events: none;
-  line-height: 1.8;
-}
-.meta-tl { top: 20px; left: 24px; }
-.meta-tr { top: 20px; right: 24px; text-align: right; }
-.meta-bl { bottom: 20px; left: 24px; }
-.meta-br { bottom: 20px; right: 24px; text-align: right; }
-
-.meta span { color: var(--gold); }
-
-/* Drag hint */
-#drag-hint {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--mono);
-  font-size: 9px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text3);
-  pointer-events: none;
-  animation: fadeHint 3s ease forwards;
-}
-@keyframes fadeHint {
-  0%{opacity:0} 10%{opacity:1} 70%{opacity:1} 100%{opacity:0}
-}
-
-/* ── ODDS CANVAS OVERLAY ─────────────────────────── */
-#odds-canvas-overlay {
-  position: absolute;
-  top: 20px; left: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  pointer-events: none;
-}
-.oco-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 11px 5px 8px;
-  border-radius: 20px;
-  border: 1.5px solid;
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  cursor: pointer;
-  pointer-events: all;
-  transition: all .15s;
-  background: rgba(8,7,10,0.82);
-  backdrop-filter: blur(6px);
-  white-space: nowrap;
-}
-.oco-btn:hover { transform: translateX(3px); }
-.oco-btn.on { transform: translateX(5px); }
-.oco-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.oco-badge {
-  font-size: 7px;
-  letter-spacing: .8px;
-  text-transform: uppercase;
-  padding: 1px 5px;
-  border-radius: 8px;
-  background: var(--gold-dim);
-  color: var(--gold);
-}
-
-/* ── DECORATIVE GRAIN ─────────────────────────────── */
-#grain {
-  position: fixed; inset: 0;
-  pointer-events: none;
-  z-index: 999;
-  opacity: .018;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 </style>
 </head>
 <body>
 <div id="grain"></div>
-
 <div id="app">
-  <!-- ── LEFT PANEL ── -->
   <div id="panel">
     <div class="panel-top">
       <div class="chapter-label">Chapter 1 &nbsp;·&nbsp; Squares & Cubes</div>
       <h1>A Square<br>and a <em>Cube</em></h1>
-      <p class="subtitle">Three ways to see<br>why n³ is what it is.</p>
+      <p class="subtitle">Three ways to see why n³ is what it is.</p>
     </div>
-
     <div class="tabs">
       <button class="tab active" data-t="layers">Layers</button>
       <button class="tab" data-t="odds">Odd Sums</button>
       <button class="tab" data-t="taxi">1729</button>
     </div>
-
     <div class="tab-body">
-      <!-- LAYERS PANE -->
+      <!-- LAYERS -->
       <div class="pane active" id="pane-layers">
-        <div class="concept">
-          <strong>The key idea</strong><br>
-          n³ = n layers of n×n. Each layer adds exactly n² unit cubes.
-        </div>
-
+        <div class="concept"><strong>The key idea</strong><br>n³ = n layers of n×n. Each layer adds exactly n² unit cubes.</div>
         <div class="ctrl-row">
           <span class="ctrl-label">n</span>
           <input type="range" id="layerN" min="1" max="6" value="3">
           <span class="ctrl-val" id="layerNv">3</span>
         </div>
-
         <div class="stat-grid">
-          <div class="stat-card">
-            <div class="stat-lbl">Per layer</div>
-            <div class="stat-val" id="s-per-layer">9</div>
-            <div class="stat-sub">n × n cubes</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-lbl">Layers shown</div>
-            <div class="stat-val" id="s-layers-shown">3</div>
-          </div>
-          <div class="stat-card gold-card span2">
-            <div class="stat-lbl">Total unit cubes</div>
-            <div class="stat-val" id="s-total">27</div>
-            <div class="stat-sub" id="s-formula">= 3 × 9 = 3³</div>
-          </div>
+          <div class="stat-card"><div class="stat-lbl">Per layer</div><div class="stat-val" id="s-per-layer">9</div><div class="stat-sub">n × n cubes</div></div>
+          <div class="stat-card"><div class="stat-lbl">Layers shown</div><div class="stat-val" id="s-layers-shown">3</div></div>
+          <div class="stat-card gold-card span2"><div class="stat-lbl">Total unit cubes</div><div class="stat-val" id="s-total">27</div><div class="stat-sub" id="s-formula">= 3 × 9 = 3³</div></div>
         </div>
-
         <div class="layer-nav">
           <button class="icn-btn" id="btn-rm">−</button>
           <div class="layer-counter" id="layer-counter">3 of 3 layers</div>
@@ -534,88 +243,45 @@ h1 em {
         <div class="layer-list" id="layer-list"></div>
         <button class="reset-btn" id="reset-layers">↺ reset view</button>
       </div>
-
-      <!-- ODDS PANE -->
+      <!-- ODDS -->
       <div class="pane" id="pane-odds">
-        <div class="concept">
-          <strong>Hidden pattern</strong><br>
-          Every n³ equals the sum of n consecutive odd numbers. The middle one is always n².
-        </div>
-
+        <div class="concept"><strong>Hidden pattern</strong><br>Every n³ equals the sum of n consecutive odd numbers. The middle one is always n².</div>
         <div class="ctrl-row">
           <span class="ctrl-label">n</span>
           <input type="range" id="oddsN" min="1" max="6" value="3">
           <span class="ctrl-val" id="oddsNv" style="color:var(--teal)">3</span>
         </div>
-
         <div class="stat-grid">
-          <div class="stat-card gold-card span2">
-            <div class="stat-lbl">Identity</div>
-            <div class="stat-val" id="s-odds-identity" style="font-size:13px;line-height:1.5">7+9+11 = 27 = 3³</div>
-          </div>
-          <div class="stat-card span2">
-            <div class="stat-lbl">Middle odd = n²</div>
-            <div class="stat-val" id="s-odds-mid">9 = 3²</div>
-          </div>
+          <div class="stat-card gold-card span2"><div class="stat-lbl">Identity</div><div class="stat-val" id="s-odds-identity" style="font-size:13px;line-height:1.5">7+9+11 = 27 = 3³</div></div>
+          <div class="stat-card span2"><div class="stat-lbl">Middle odd = n²</div><div class="stat-val" id="s-odds-mid">9 = 3²</div></div>
         </div>
-
-        <div style="font-family:var(--mono);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Click a group to isolate it</div>
+        <div style="font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">Click a group to isolate it</div>
         <div class="odds-legend" id="odds-legend"></div>
         <button class="reset-btn" id="reset-odds">↺ reset view</button>
       </div>
-
-      <!-- TAXI PANE -->
+      <!-- TAXI -->
       <div class="pane" id="pane-taxi">
-        <div class="concept">
-          <strong>Hardy–Ramanujan</strong><br>
-          1729 is the smallest number expressible as the sum of two cubes in two <em>different</em> ways.
-        </div>
-
+        <div class="concept"><strong>Hardy–Ramanujan</strong><br>1729 is the smallest number expressible as the sum of two cubes in two <em>different</em> ways.</div>
         <div class="stat-grid">
-          <div class="stat-card gold-card span2">
-            <div class="stat-lbl">The taxicab number</div>
-            <div class="stat-val" style="font-size:28px">1729</div>
-            <div class="stat-sub">Hardy called it dull. Ramanujan disagreed.</div>
-          </div>
+          <div class="stat-card gold-card span2"><div class="stat-lbl">The taxicab number</div><div class="stat-val" style="font-size:26px">1729</div><div class="stat-sub">Hardy called it dull. Ramanujan disagreed.</div></div>
         </div>
-
-        <div class="taxi-row on" id="taxi-r1" data-w="1">
-          <div class="taxi-tag">Way 1</div>
-          <div class="taxi-eq">1³ + 12³</div>
-          <div class="taxi-sub">1 + 1,728 = 1729</div>
-        </div>
-        <div class="taxi-row" id="taxi-r2" data-w="2">
-          <div class="taxi-tag">Way 2</div>
-          <div class="taxi-eq">9³ + 10³</div>
-          <div class="taxi-sub">729 + 1,000 = 1729</div>
-        </div>
-
+        <div class="taxi-row on" id="taxi-r1" data-w="1"><div class="taxi-tag">Way 1</div><div class="taxi-eq">1³ + 12³</div><div class="taxi-sub">1 + 1,728 = 1729</div></div>
+        <div class="taxi-row" id="taxi-r2" data-w="2"><div class="taxi-tag">Way 2</div><div class="taxi-eq">9³ + 10³</div><div class="taxi-sub">729 + 1,000 = 1729</div></div>
         <div class="stat-card" style="margin-top:4px">
           <div class="stat-lbl">Why remarkable</div>
-          <div style="font-family:var(--mono);font-size:10px;color:var(--text2);line-height:1.8;margin-top:4px">Most numbers can't be written as a sum of two cubes even once.<br>1729 does it twice — and it's the <span style="color:var(--gold)">smallest</span> such number.</div>
+          <div style="font-family:var(--mono);font-size:11px;color:var(--text2);line-height:1.8;margin-top:4px">Most numbers can't be written as a sum of two cubes even once.<br>1729 does it twice — and it's the <span style="color:var(--gold)">smallest</span> such number.</div>
         </div>
-
         <button class="reset-btn" id="reset-taxi" style="margin-top:12px">↺ reset view</button>
       </div>
     </div>
   </div>
 
-  <!-- ── CANVAS ── -->
   <div id="stage">
     <canvas id="c"></canvas>
-    <div class="meta meta-tl" id="meta-tl">
-      Chapter 1<br><span>A Square and a Cube</span>
-    </div>
-    <div class="meta meta-tr" id="meta-tr">
-      Mode · <span id="meta-mode">LAYERS</span><br>
-      n = <span id="meta-n">3</span>
-    </div>
-    <div class="meta meta-bl">
-      Drag to orbit &nbsp;·&nbsp; Scroll to zoom
-    </div>
-    <div class="meta meta-br" id="meta-br">
-      Total cubes · <span>27</span>
-    </div>
+    <div class="meta meta-tl">Chapter 1<br><span>A Square and a Cube</span></div>
+    <div class="meta meta-tr">Mode · <span id="meta-mode">LAYERS</span><br>n = <span id="meta-n">3</span></div>
+    <div class="meta meta-bl">Drag to orbit &nbsp;·&nbsp; Scroll to zoom</div>
+    <div class="meta meta-br" id="meta-br">Total cubes · <span>27</span></div>
     <div id="odds-canvas-overlay"></div>
     <div id="drag-hint">← drag to rotate →</div>
   </div>
@@ -623,342 +289,220 @@ h1 em {
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-// ═══════════════════════════════════════════════
-// COLOURS
-// ═══════════════════════════════════════════════
-const C = {
-  gold:   0xc9a84c,
-  gold2:  0xe8c96a,
-  teal:   0x4ecdc4,
-  rust:   0xe8604c,
-  sage:   0x7bc67a,
-  violet: 0x9b7fe8,
-  ocean:  0x4a8fc0,
-  pink:   0xe87fa8,
-};
-const COLS = [C.teal, C.rust, C.gold, C.sage, C.violet, C.ocean];
-const COLS_CSS = ['#4ecdc4','#e8604c','#c9a84c','#7bc67a','#9b7fe8','#4a8fc0'];
-function hex(n){ return '#'+n.toString(16).padStart(6,'0') }
+const C={gold:0xc9a84c,gold2:0xe8c96a,teal:0x4ecdc4,rust:0xe8604c,sage:0x7bc67a,violet:0x9b7fe8,ocean:0x4a8fc0};
+const COLS=[C.teal,C.rust,C.gold,C.sage,C.violet,C.ocean];
+const COLS_CSS=['#4ecdc4','#e8604c','#c9a84c','#7bc67a','#9b7fe8','#4a8fc0'];
+function hex(n){return '#'+n.toString(16).padStart(6,'0')}
 
-// ═══════════════════════════════════════════════
-// RENDERER (single shared)
-// ═══════════════════════════════════════════════
-const canvas = document.getElementById('c');
-const stage  = document.getElementById('stage');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false });
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.setClearColor(0x08070a, 1);
+const canvas=document.getElementById('c');
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+// NO shadows — cleaner look, better perf on mobile
+renderer.setClearColor(0x08070a,1);
 
-const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0x08070a, 40, 90);
+const scene=new THREE.Scene();
+scene.fog=new THREE.Fog(0x08070a,40,90);
+const cam=new THREE.PerspectiveCamera(38,1,0.1,200);
 
-const cam = new THREE.PerspectiveCamera(38, 1, 0.1, 200);
-
-// Lights — dramatic side-lit
-const amb = new THREE.AmbientLight(0x1a1628, 0.9);
-scene.add(amb);
-const key = new THREE.DirectionalLight(0xffd88a, 1.4);
-key.position.set(12, 18, 10);
-key.castShadow = true;
-key.shadow.mapSize.set(2048,2048);
+// Lights — no shadow maps
+scene.add(new THREE.AmbientLight(0x2a2030,1.1));
+const key=new THREE.DirectionalLight(0xffd88a,1.4);
+key.position.set(12,18,10);
 scene.add(key);
-const fill = new THREE.DirectionalLight(0x2a4a6a, 0.35);
-fill.position.set(-10, -5, -8);
+const fill=new THREE.DirectionalLight(0x2a4a6a,0.4);
+fill.position.set(-10,-5,-8);
 scene.add(fill);
-const rim = new THREE.DirectionalLight(0x4ecdc4, 0.18);
-rim.position.set(0, -12, 10);
+const rim=new THREE.DirectionalLight(0x4ecdc4,0.2);
+rim.position.set(0,-12,10);
 scene.add(rim);
 
-// Ground plane for shadow catching
-const ground = new THREE.Mesh(
-  new THREE.PlaneGeometry(80, 80),
-  new THREE.ShadowMaterial({ opacity: 0.25 })
-);
-ground.rotation.x = -Math.PI/2;
-ground.position.y = -20;
-ground.receiveShadow = true;
-scene.add(ground);
-
-// Orbit
-let o = { th: 0.65, ph: 0.58, d: 18, dragging: false, lx: 0, ly: 0 };
-function posCam() {
-  cam.position.set(
-    o.d * Math.sin(o.ph) * Math.sin(o.th),
-    o.d * Math.cos(o.ph),
-    o.d * Math.sin(o.ph) * Math.cos(o.th)
-  );
-  cam.lookAt(0, 0, 0);
+let o={th:0.65,ph:0.58,d:18,dragging:false,lx:0,ly:0};
+function posCam(){
+  cam.position.set(o.d*Math.sin(o.ph)*Math.sin(o.th),o.d*Math.cos(o.ph),o.d*Math.sin(o.ph)*Math.cos(o.th));
+  cam.lookAt(0,0,0);
 }
 posCam();
 
-canvas.addEventListener('pointerdown', e => { o.dragging=true; o.lx=e.clientX; o.ly=e.clientY; canvas.setPointerCapture(e.pointerId); });
-canvas.addEventListener('pointermove', e => {
-  if (!o.dragging) return;
-  o.th -= (e.clientX - o.lx) * 0.012;
-  o.ph = Math.max(0.1, Math.min(Math.PI-0.1, o.ph + (e.clientY - o.ly) * 0.012));
-  o.lx=e.clientX; o.ly=e.clientY; posCam();
+canvas.addEventListener('pointerdown',e=>{o.dragging=true;o.lx=e.clientX;o.ly=e.clientY;canvas.setPointerCapture(e.pointerId);});
+canvas.addEventListener('pointermove',e=>{
+  if(!o.dragging)return;
+  o.th-=(e.clientX-o.lx)*0.012;
+  o.ph=Math.max(0.1,Math.min(Math.PI-0.1,o.ph+(e.clientY-o.ly)*0.012));
+  o.lx=e.clientX;o.ly=e.clientY;posCam();
 });
-canvas.addEventListener('pointerup', () => o.dragging = false);
-stage.addEventListener('wheel', e => {
-  e.preventDefault();
-  o.d = Math.max(5, Math.min(50, o.d + e.deltaY * 0.025));
-  posCam();
-}, { passive: false });
+canvas.addEventListener('pointerup',()=>o.dragging=false);
+stage.addEventListener('wheel',e=>{e.preventDefault();o.d=Math.max(5,Math.min(50,o.d+e.deltaY*0.025));posCam();},{passive:false});
 
-new ResizeObserver(() => {
-  renderer.setSize(stage.clientWidth, stage.clientHeight);
-  cam.aspect = stage.clientWidth / stage.clientHeight;
+new ResizeObserver(()=>{
+  renderer.setSize(stage.clientWidth,stage.clientHeight);
+  cam.aspect=stage.clientWidth/stage.clientHeight;
   cam.updateProjectionMatrix();
 }).observe(stage);
-renderer.setSize(stage.clientWidth, stage.clientHeight);
-cam.aspect = stage.clientWidth / stage.clientHeight;
+renderer.setSize(stage.clientWidth,stage.clientHeight);
+cam.aspect=stage.clientWidth/stage.clientHeight;
 cam.updateProjectionMatrix();
 
-// Render loop
-(function loop(){ requestAnimationFrame(loop); renderer.render(scene, cam); })();
+(function loop(){requestAnimationFrame(loop);renderer.render(scene,cam);})();
+function resetCam(d=18){o.th=0.65;o.ph=0.58;o.d=d;posCam();}
 
-function resetCam(d=18) {
-  o.th=0.65; o.ph=0.58; o.d=d; posCam();
+// Shared edge geometry
+const _eg=new THREE.EdgesGeometry(new THREE.BoxGeometry(0.88,0.88,0.88));
+
+function makeIndepCube(hexCol,x,y,z){
+  const geo=new THREE.BoxGeometry(0.88,0.88,0.88);
+  const mat=new THREE.MeshLambertMaterial({color:hexCol});
+  const m=new THREE.Mesh(geo,mat);
+  m.position.set(x,y,z);
+  m.add(new THREE.LineSegments(_eg,new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.10})));
+  return{mesh:m,mat,geo};
 }
 
-// ═══════════════════════════════════════════════
-// GEOMETRY HELPERS
-// ═══════════════════════════════════════════════
-const _bg  = new THREE.BoxGeometry(0.88, 0.88, 0.88);
-const _eg  = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.88, 0.88, 0.88));
-
-function makeCube(hexCol, x, y, z) {
-  const mat = new THREE.MeshLambertMaterial({ color: hexCol });
-  const m = new THREE.Mesh(_bg, mat);
-  m.castShadow = m.receiveShadow = true;
-  m.position.set(x, y, z);
-  const edge = new THREE.LineSegments(_eg, new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.12 }));
-  m.add(edge);
-  return { mesh: m, mat };
-}
-
-function makeIndepCube(hexCol, x, y, z) {
-  const geo = new THREE.BoxGeometry(0.88, 0.88, 0.88);
-  const mat = new THREE.MeshLambertMaterial({ color: hexCol });
-  const m = new THREE.Mesh(geo, mat);
-  m.castShadow = m.receiveShadow = true;
-  m.position.set(x, y, z);
-  const eg = new THREE.EdgesGeometry(geo);
-  const edge = new THREE.LineSegments(eg, new THREE.LineBasicMaterial({ color: 0x000000, transparent:true, opacity:0.12 }));
-  m.add(edge);
-  return { mesh: m, mat, geo, eg };
-}
-
-// Text sprite
-function sprite(text, opts={}) {
-  const { color='#f0ece0', bg='rgba(8,7,10,0.88)', fs=24, bold=true } = opts;
-  const cv = document.createElement('canvas');
-  const ctx = cv.getContext('2d');
-  const font = `${bold?'700':'400'} ${fs}px "Space Mono", monospace`;
-  ctx.font = font;
-  const lines = text.split('\n');
-  const lh = fs * 1.35;
-  const tw = Math.max(...lines.map(l=>ctx.measureText(l).width));
-  cv.width  = tw + 24;
-  cv.height = lh * lines.length + 16;
-  ctx.font = font;
-  ctx.fillStyle = bg;
-  rrect(ctx, 0, 0, cv.width, cv.height, 7); ctx.fill();
-  ctx.strokeStyle = 'rgba(201,168,76,0.3)'; ctx.lineWidth=1;
-  rrect(ctx, 0, 0, cv.width, cv.height, 7); ctx.stroke();
-  ctx.fillStyle = color; ctx.textAlign='center'; ctx.textBaseline='middle';
-  lines.forEach((l,i)=>ctx.fillText(l, cv.width/2, 8 + lh*(i+0.5)));
-  const tex = new THREE.CanvasTexture(cv);
-  const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthTest:false }));
-  sp.scale.set(cv.width/cv.height * 1.8, 1.8, 1);
+function sprite(text,opts={}){
+  const{color='#f0ece0',bg='rgba(8,7,10,0.88)',fs=24,bold=true}=opts;
+  const cv=document.createElement('canvas');
+  const ctx=cv.getContext('2d');
+  const font=`${bold?'700':'400'} ${fs}px "Space Mono",monospace`;
+  ctx.font=font;
+  const lines=text.split('\n');
+  const lh=fs*1.35;
+  const tw=Math.max(...lines.map(l=>ctx.measureText(l).width));
+  cv.width=tw+24;cv.height=lh*lines.length+16;
+  ctx.font=font;
+  ctx.fillStyle=bg;
+  rrect(ctx,0,0,cv.width,cv.height,7);ctx.fill();
+  ctx.strokeStyle='rgba(201,168,76,0.3)';ctx.lineWidth=1;
+  rrect(ctx,0,0,cv.width,cv.height,7);ctx.stroke();
+  ctx.fillStyle=color;ctx.textAlign='center';ctx.textBaseline='middle';
+  lines.forEach((l,i)=>ctx.fillText(l,cv.width/2,8+lh*(i+0.5)));
+  const tex=new THREE.CanvasTexture(cv);
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:false}));
+  sp.scale.set(cv.width/cv.height*1.8,1.8,1);
   return sp;
 }
-
-function rrect(ctx,x,y,w,h,r) {
+function rrect(ctx,x,y,w,h,r){
   ctx.beginPath();
-  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y);
+  ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+  ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+  ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);
   ctx.closePath();
 }
-
-function lineObj(from, to, col=0xc9a84c) {
-  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from), new THREE.Vector3(...to)]);
-  return new THREE.Line(g, new THREE.LineBasicMaterial({color:col, transparent:true, opacity:0.5}));
+function lineObj(from,to,col=0xc9a84c){
+  const g=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from),new THREE.Vector3(...to)]);
+  return new THREE.Line(g,new THREE.LineBasicMaterial({color:col,transparent:true,opacity:0.5}));
 }
 
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-let activeTab = 'layers'; // must be declared before any build* calls
-const root = new THREE.Group();
+let activeTab='layers';
+const root=new THREE.Group();
 scene.add(root);
-root.rotation.y = 0;
-
-// Animate slow spin when idle
-let lastInteract = Date.now();
-canvas.addEventListener('pointerdown', () => lastInteract = Date.now());
-
-// subtle idle rotation
+let lastInteract=Date.now();
+canvas.addEventListener('pointerdown',()=>lastInteract=Date.now());
 ;(function idleSpin(){
   requestAnimationFrame(idleSpin);
-  if (Date.now() - lastInteract > 4000 && !o.dragging) {
-    o.th += 0.0015; posCam();
-  }
+  if(Date.now()-lastInteract>4000&&!o.dragging){o.th+=0.0015;posCam();}
 })();
 
-// ═══════════════════════════════════════════════
-// TAB 1 — LAYERS
-// ═══════════════════════════════════════════════
-const layersGrp = new THREE.Group();
-root.add(layersGrp);
+// ── LAYERS ──
+const layersGrp=new THREE.Group();root.add(layersGrp);
+let LN=3,LShown=3,layerMeshes=[];
 
-let LN = 3, LShown = 3;
-let layerMeshes = [];
-
-function buildLayers() {
-  layersGrp.clear();
-  layerMeshes = [];
-  const off = -(LN-1)/2;
-  for (let z=0; z<LN; z++) {
-    const col = COLS[z % COLS.length];
-    const lay = [];
-    for (let y=0; y<LN; y++) {
-      for (let x=0; x<LN; x++) {
-        const c = makeIndepCube(col, off+x, off+z, off+y);
-        lay.push(c);
-      }
-    }
+function buildLayers(){
+  layersGrp.clear();layerMeshes=[];
+  const off=-(LN-1)/2;
+  for(let z=0;z<LN;z++){
+    const col=COLS[z%COLS.length];const lay=[];
+    for(let y=0;y<LN;y++)for(let x=0;x<LN;x++)lay.push(makeIndepCube(col,off+x,off+z,off+y));
     layerMeshes.push(lay);
   }
   applyLayerVis();
 }
 
-function applyLayerVis() {
+function applyLayerVis(){
   layersGrp.clear();
-  for (let z=0; z<LN; z++) {
-    if (z < LShown) layerMeshes[z].forEach(c => layersGrp.add(c.mesh));
-  }
-  updateLayerUI();
-  updateMetaBR(LN*LN*LShown);
+  for(let z=0;z<LN;z++)if(z<LShown)layerMeshes[z].forEach(c=>layersGrp.add(c.mesh));
+  updateLayerUI();updateMetaBR(LN*LN*LShown);
 }
 
-function updateLayerUI() {
-  document.getElementById('layerNv').textContent = LN;
-  document.getElementById('s-per-layer').textContent = LN*LN;
-  document.getElementById('s-layers-shown').textContent = LShown;
-  document.getElementById('s-total').textContent = LN*LN*LShown;
-  document.getElementById('s-formula').textContent = `= ${LShown} × ${LN*LN} = ${LShown===LN?LN+'³':LShown+'×'+LN+'²'}`;
-  document.getElementById('layer-counter').textContent = `${LShown} of ${LN} layers`;
-  document.getElementById('btn-add').disabled = LShown >= LN;
-  document.getElementById('btn-rm').disabled = LShown <= 0;
-  document.getElementById('meta-n').textContent = LN;
-
-  const list = document.getElementById('layer-list');
-  list.innerHTML = '';
-  for (let z=0; z<LN; z++) {
-    const col = COLS[z%COLS.length];
-    const el = document.createElement('div');
-    el.className = 'layer-item' + (z < LShown ? ' on' : '');
-    el.innerHTML = `<div class="layer-dot" style="background:${hex(col)}"></div><span>Layer ${z+1} — ${LN}×${LN} = ${LN*LN} cubes</span>`;
-    el.style.opacity = z < LShown ? '1' : '0.35';
-    el.addEventListener('click', () => { LShown = z+1; applyLayerVis(); });
+function updateLayerUI(){
+  document.getElementById('layerNv').textContent=LN;
+  document.getElementById('s-per-layer').textContent=LN*LN;
+  document.getElementById('s-layers-shown').textContent=LShown;
+  document.getElementById('s-total').textContent=LN*LN*LShown;
+  document.getElementById('s-formula').textContent=`= ${LShown} × ${LN*LN} = ${LShown===LN?LN+'³':LShown+'×'+LN+'²'}`;
+  document.getElementById('layer-counter').textContent=`${LShown} of ${LN} layers`;
+  document.getElementById('btn-add').disabled=LShown>=LN;
+  document.getElementById('btn-rm').disabled=LShown<=0;
+  document.getElementById('meta-n').textContent=LN;
+  const list=document.getElementById('layer-list');list.innerHTML='';
+  for(let z=0;z<LN;z++){
+    const col=COLS[z%COLS.length];
+    const el=document.createElement('div');
+    el.className='layer-item'+(z<LShown?' on':'');
+    el.innerHTML=`<div class="layer-dot" style="background:${hex(col)}"></div><span>Layer ${z+1} — ${LN}×${LN} = ${LN*LN} cubes</span>`;
+    el.style.opacity=z<LShown?'1':'0.35';
+    el.addEventListener('click',()=>{LShown=z+1;applyLayerVis();});
     list.appendChild(el);
   }
 }
 
-document.getElementById('layerN').addEventListener('input', e => {
-  LN = +e.target.value; LShown = LN;
-  buildLayers(); resetCam(LN*3.6+7);
-});
-document.getElementById('btn-add').addEventListener('click', () => { if(LShown<LN){LShown++;applyLayerVis();}});
-document.getElementById('btn-rm').addEventListener('click', () => { if(LShown>0){LShown--;applyLayerVis();}});
-document.getElementById('reset-layers').addEventListener('click', () => resetCam(LN*3.6+7));
-
+document.getElementById('layerN').addEventListener('input',e=>{LN=+e.target.value;LShown=LN;buildLayers();resetCam(LN*3.6+7);});
+document.getElementById('btn-add').addEventListener('click',()=>{if(LShown<LN){LShown++;applyLayerVis();}});
+document.getElementById('btn-rm').addEventListener('click',()=>{if(LShown>0){LShown--;applyLayerVis();}});
+document.getElementById('reset-layers').addEventListener('click',()=>resetCam(LN*3.6+7));
 buildLayers();
 
-// ═══════════════════════════════════════════════
-// TAB 2 — ODDS
-// ═══════════════════════════════════════════════
-const oddsGrp = new THREE.Group();
-root.add(oddsGrp);
-oddsGrp.visible = false;
+// ── ODDS ──
+const oddsGrp=new THREE.Group();root.add(oddsGrp);oddsGrp.visible=false;
+let ON=3,OHi=-1,oddFaceMats=[],oddEdgeMats=[],oddGroupOf=[],oddOrigHex=[];
 
-let ON = 3, OHi = -1;
-let oddFaceMats=[], oddEdgeMats=[], oddGroupOf=[], oddOrigHex=[];
-
-function oddsFor(n) {
-  let c = 1;
-  for (let k=1;k<n;k++) c += 2*k;
-  const out = [];
-  for (let i=0;i<n;i++) { out.push(c); c+=2; }
-  return out;
+function oddsFor(n){
+  let c=1;for(let k=1;k<n;k++)c+=2*k;
+  const out=[];for(let i=0;i<n;i++){out.push(c);c+=2;}return out;
 }
 
-function buildOdds() {
+function buildOdds(){
   oddsGrp.children.forEach(obj=>obj.traverse(node=>{if(node.geometry)node.geometry.dispose();if(node.material)node.material.dispose();}));
-  oddsGrp.clear();
-  oddFaceMats=[]; oddEdgeMats=[]; oddGroupOf=[]; oddOrigHex=[];
-
-  const odds = oddsFor(ON);
-  const off = -(ON-1)/2;
-  const bounds=[0]; let cum=0;
-  odds.forEach(v=>{cum+=v;bounds.push(cum);});
-
+  oddsGrp.clear();oddFaceMats=[];oddEdgeMats=[];oddGroupOf=[];oddOrigHex=[];
+  const odds=oddsFor(ON);const off=-(ON-1)/2;
+  const bounds=[0];let cum=0;odds.forEach(v=>{cum+=v;bounds.push(cum);});
   let idx=0;
-  for (let y=0;y<ON;y++) for (let z=0;z<ON;z++) for (let x=0;x<ON;x++) {
-    let g=0;
-    for (;g<odds.length-1;g++) if(idx<bounds[g+1]) break;
-    const hexCol = COLS[g%COLS.length];
-    const c = makeIndepCube(hexCol, off+x, off+y, off+z);
-    const edgeMat = c.mesh.children[0].material;
+  for(let y=0;y<ON;y++)for(let z=0;z<ON;z++)for(let x=0;x<ON;x++){
+    let g=0;for(;g<odds.length-1;g++)if(idx<bounds[g+1])break;
+    const hexCol=COLS[g%COLS.length];
+    const c=makeIndepCube(hexCol,off+x,off+y,off+z);
+    const edgeMat=c.mesh.children[0].material;
     oddsGrp.add(c.mesh);
-    oddFaceMats.push(c.mat);
-    oddEdgeMats.push(edgeMat);
-    oddGroupOf.push(g);
-    oddOrigHex.push(hexCol);
+    oddFaceMats.push(c.mat);oddEdgeMats.push(edgeMat);oddGroupOf.push(g);oddOrigHex.push(hexCol);
     idx++;
   }
-
-  OHi = -1;
-  updateOddsUI();
-  updateMetaBR(ON*ON*ON);
+  OHi=-1;updateOddsUI();updateMetaBR(ON*ON*ON);
 }
 
-function applyOddsHi() {
+function applyOddsHi(){
   oddFaceMats.forEach((mat,i)=>{
-    const em = oddEdgeMats[i];
-    const sel = (OHi===-1)||(oddGroupOf[i]===OHi);
-    if (sel) {
-      mat.color.setHex(oddOrigHex[i]);
-      mat.transparent=false; mat.opacity=1; mat.depthWrite=true; mat.needsUpdate=true;
-      em.color.setHex(0x000000); em.opacity=0.12; em.needsUpdate=true;
-    } else {
-      mat.transparent=true; mat.opacity=0; mat.depthWrite=false; mat.needsUpdate=true;
-      em.color.setHex(oddOrigHex[i]); em.opacity=0.22; em.needsUpdate=true;
+    const em=oddEdgeMats[i];const sel=(OHi===-1)||(oddGroupOf[i]===OHi);
+    if(sel){
+      mat.color.setHex(oddOrigHex[i]);mat.transparent=false;mat.opacity=1;mat.depthWrite=true;mat.needsUpdate=true;
+      em.color.setHex(0x000000);em.opacity=0.10;em.needsUpdate=true;
+    }else{
+      mat.transparent=true;mat.opacity=0;mat.depthWrite=false;mat.needsUpdate=true;
+      em.color.setHex(oddOrigHex[i]);em.opacity=0.22;em.needsUpdate=true;
     }
   });
 }
 
-function updateOddsUI() {
-  const odds = oddsFor(ON);
-  document.getElementById('oddsNv').textContent = ON;
-  document.getElementById('meta-n').textContent = ON;
-  document.getElementById('s-odds-identity').textContent = odds.join(' + ') + ' = ' + ON**3 + ' = ' + ON + '³';
-  const mi = Math.floor((ON-1)/2);
-  document.getElementById('s-odds-mid').textContent = (ON%2===1)
-    ? odds[mi]+' = '+ON+'²'
-    : '('+odds[mi]+'+'+odds[mi+1]+')/2 = '+ON+'²';
-
-  // legend
-  const leg = document.getElementById('odds-legend');
-  leg.innerHTML='';
+function updateOddsUI(){
+  const odds=oddsFor(ON);
+  document.getElementById('oddsNv').textContent=ON;
+  document.getElementById('meta-n').textContent=ON;
+  document.getElementById('s-odds-identity').textContent=odds.join(' + ')+' = '+ON**3+' = '+ON+'³';
+  const mi=Math.floor((ON-1)/2);
+  document.getElementById('s-odds-mid').textContent=(ON%2===1)?odds[mi]+' = '+ON+'²':'('+odds[mi]+'+'+odds[mi+1]+')/2 = '+ON+'²';
+  const leg=document.getElementById('odds-legend');leg.innerHTML='';
   odds.forEach((v,i)=>{
     const col=COLS_CSS[i%COLS_CSS.length];
-    const isMid = (ON%2===1 && i===mi)||(ON%2===0 && (i===mi||i===mi+1));
+    const isMid=(ON%2===1&&i===mi)||(ON%2===0&&(i===mi||i===mi+1));
     const row=document.createElement('div');
     row.className='odds-row'+(OHi===i?' on':'');
     row.style.borderColor=OHi===i?col:(col+'55');
@@ -966,151 +510,102 @@ function updateOddsUI() {
     row.addEventListener('click',()=>{OHi=(OHi===i)?-1:i;applyOddsHi();updateOddsUI();updateOverlay();});
     leg.appendChild(row);
   });
-
   updateOverlay();
 }
 
-function updateOverlay() {
-  const odds = oddsFor(ON);
-  const ov = document.getElementById('odds-canvas-overlay');
-  ov.innerHTML='';
-  if (activeTab!=='odds') return;
+function updateOverlay(){
+  const odds=oddsFor(ON);const ov=document.getElementById('odds-canvas-overlay');ov.innerHTML='';
+  if(activeTab!=='odds')return;
   const mi=Math.floor((ON-1)/2);
   odds.forEach((v,i)=>{
     const col=COLS_CSS[i%COLS_CSS.length];
     const isMid=(ON%2===1&&i===mi)||(ON%2===0&&(i===mi||i===mi+1));
     const btn=document.createElement('button');
     btn.className='oco-btn'+(OHi===i?' on':'');
-    btn.style.borderColor=OHi===i?col:(col+'55');
-    btn.style.color=col;
+    btn.style.borderColor=OHi===i?col:(col+'55');btn.style.color=col;
     btn.innerHTML=`<div class="oco-dot" style="background:${col}"></div>${v} cells${isMid?'<span class="oco-badge">n²</span>':''}`;
     btn.addEventListener('click',e=>{e.stopPropagation();OHi=(OHi===i)?-1:i;applyOddsHi();updateOddsUI();});
     ov.appendChild(btn);
   });
 }
 
-document.getElementById('oddsN').addEventListener('input', e => {
-  ON = +e.target.value;
-  buildOdds(); resetCam(ON*3.6+7);
-});
-document.getElementById('reset-odds').addEventListener('click', () => {
-  OHi=-1; applyOddsHi(); updateOddsUI(); resetCam(ON*3.6+7);
-});
-
+document.getElementById('oddsN').addEventListener('input',e=>{ON=+e.target.value;buildOdds();resetCam(ON*3.6+7);});
+document.getElementById('reset-odds').addEventListener('click',()=>{OHi=-1;applyOddsHi();updateOddsUI();resetCam(ON*3.6+7);});
 buildOdds();
 
-// ═══════════════════════════════════════════════
-// TAB 3 — TAXI
-// ═══════════════════════════════════════════════
-const taxiGrp = new THREE.Group();
-root.add(taxiGrp);
-taxiGrp.visible = false;
+// ── TAXI ──
+const taxiGrp=new THREE.Group();root.add(taxiGrp);taxiGrp.visible=false;
+let TW=1;
 
-let TW = 1;
-
-function buildSolidCube(side, hexCol, ox, oy, oz) {
-  const g = new THREE.Group();
-  g.position.set(ox, oy, oz);
-  const geo = new THREE.BoxGeometry(side, side, side);
-  const mat = new THREE.MeshLambertMaterial({ color: hexCol, transparent:true, opacity:0.78 });
-  const m = new THREE.Mesh(geo, mat);
-  m.castShadow = m.receiveShadow = true;
-  g.add(m);
-  const eg = new THREE.EdgesGeometry(geo);
-  g.add(new THREE.LineSegments(eg, new THREE.LineBasicMaterial({color:hexCol, transparent:true, opacity:0.6})));
-
-  // grid lines inside
-  if (side <= 10) {
-    const lm = new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.05});
+function buildSolidCube(side,hexCol,ox,oy,oz){
+  const g=new THREE.Group();g.position.set(ox,oy,oz);
+  const geo=new THREE.BoxGeometry(side,side,side);
+  const mat=new THREE.MeshLambertMaterial({color:hexCol,transparent:true,opacity:0.78});
+  const m=new THREE.Mesh(geo,mat);g.add(m);
+  const eg=new THREE.EdgesGeometry(geo);
+  g.add(new THREE.LineSegments(eg,new THREE.LineBasicMaterial({color:hexCol,transparent:true,opacity:0.6})));
+  if(side<=10){
+    const lm=new THREE.LineBasicMaterial({color:0x000000,transparent:true,opacity:0.05});
     const s=side;
-    for (let i=1;i<s;i++) {
+    for(let i=1;i<s;i++){
       const dirs=[[[-s/2+i,-s/2,-s/2],[-s/2+i,s/2,-s/2]],[[-s/2,-s/2+i,-s/2],[s/2,-s/2+i,-s/2]],[[-s/2,-s/2,-s/2+i],[s/2,-s/2,-s/2+i]]];
       dirs.forEach(([a,b])=>g.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...a),new THREE.Vector3(...b)]),lm)));
     }
   }
-
-  // dimension line & label
-  const hl = side/2;
-  g.add(lineObj([-hl,hl+0.25,hl],[hl,hl+0.25,hl], hexCol));
-  const sp = sprite(side+'³ = '+(side**3).toLocaleString(), {color:hex(hexCol), bg:'rgba(8,7,10,0.9)', fs:22});
-  sp.position.set(0, hl+2.0, 0);
-  g.add(sp);
-  const sp2 = sprite('side = '+side, {color:'#f0ece0', bg:'rgba(8,7,10,0.85)', fs:18, bold:false});
-  sp2.position.set(0, -hl-1.5, 0);
-  g.add(sp2);
-
+  const hl=side/2;
+  g.add(lineObj([-hl,hl+0.25,hl],[hl,hl+0.25,hl],hexCol));
+  const sp=sprite(side+'³ = '+(side**3).toLocaleString(),{color:hex(hexCol),bg:'rgba(8,7,10,0.9)',fs:22});
+  sp.position.set(0,hl+2.0,0);g.add(sp);
+  const sp2=sprite('side = '+side,{color:'#f0ece0',bg:'rgba(8,7,10,0.85)',fs:18,bold:false});
+  sp2.position.set(0,-hl-1.5,0);g.add(sp2);
   return g;
 }
 
-function buildTaxi() {
+function buildTaxi(){
   taxiGrp.clear();
-  const [a,b] = TW===1 ? [1,12] : [9,10];
-  const colA = C.teal, colB = C.rust;
-  const gap = 1.5;
-  const aX = -(gap/2+b/2), bX = gap/2+a/2;
-  const aY = (b-a)/2;
-  taxiGrp.add(buildSolidCube(a, colA, aX, aY, 0));
-  taxiGrp.add(buildSolidCube(b, colB, bX, 0, 0));
-
-  // + sprite
-  const plus = sprite('+', {color:'#f0ece0',bg:'rgba(8,7,10,0)',fs:40,bold:true});
-  plus.position.set((aX+bX)/2, Math.max(a,b)/2+1.0, Math.max(a,b)/2+1.0);
+  const[a,b]=TW===1?[1,12]:[9,10];
+  const colA=C.teal,colB=C.rust;
+  const gap=1.5;
+  const aX=-(gap/2+b/2),bX=gap/2+a/2,aY=(b-a)/2;
+  taxiGrp.add(buildSolidCube(a,colA,aX,aY,0));
+  taxiGrp.add(buildSolidCube(b,colB,bX,0,0));
+  const plus=sprite('+',{color:'#f0ece0',bg:'rgba(8,7,10,0)',fs:40,bold:true});
+  plus.position.set((aX+bX)/2,Math.max(a,b)/2+1.0,Math.max(a,b)/2+1.0);
   taxiGrp.add(plus);
-
-  // sum sprite
-  const eq = sprite(a+'³ + '+b+'³ = 1729', {color:'#c9a84c',bg:'rgba(8,7,10,0.92)',fs:24});
-  eq.position.set((aX+bX)/2, -Math.max(a,b)/2-3.0, 0);
+  const eq=sprite(a+'³ + '+b+'³ = 1729',{color:'#c9a84c',bg:'rgba(8,7,10,0.92)',fs:24});
+  eq.position.set((aX+bX)/2,-Math.max(a,b)/2-3.0,0);
   taxiGrp.add(eq);
-
-  // UI
-  ['1','2'].forEach(w=>{
-    document.getElementById('taxi-r'+w).classList.toggle('on', +w===TW);
-  });
+  ['1','2'].forEach(w=>document.getElementById('taxi-r'+w).classList.toggle('on',+w===TW));
   updateMetaBR(a**3+b**3);
   resetCam(Math.max(a,b)*1.65+9);
 }
 
 ['taxi-r1','taxi-r2'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',()=>{
-    TW=+document.getElementById(id).dataset.w; buildTaxi();
-  });
+  document.getElementById(id).addEventListener('click',()=>{TW=+document.getElementById(id).dataset.w;buildTaxi();});
 });
 document.getElementById('reset-taxi').addEventListener('click',()=>resetCam(Math.max(...(TW===1?[1,12]:[9,10]))*1.65+9));
-
 buildTaxi();
 
-// ═══════════════════════════════════════════════
-// META HELPERS
-// ═══════════════════════════════════════════════
-function updateMetaBR(n) {
-  const label = activeTab==='taxi' ? 'Sum' : 'Total cubes';
-  document.getElementById('meta-br').innerHTML = label+' · <span>'+n.toLocaleString()+'</span>';
+function updateMetaBR(n){
+  const label=activeTab==='taxi'?'Sum':'Total cubes';
+  document.getElementById('meta-br').innerHTML=label+' · <span>'+n.toLocaleString()+'</span>';
 }
 
-// ═══════════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════════
-function setTab(t) {
-  activeTab = t;
+function setTab(t){
+  activeTab=t;
   document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.t===t));
   document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id==='pane-'+t));
-
-  layersGrp.visible = t==='layers';
-  oddsGrp.visible   = t==='odds';
-  taxiGrp.visible   = t==='taxi';
-
-  document.getElementById('meta-mode').textContent = t.toUpperCase();
-
-  if (t==='layers') { updateLayerUI(); updateMetaBR(LN*LN*LShown); resetCam(LN*3.6+7); }
-  if (t==='odds')   { updateOddsUI(); updateOverlay(); updateMetaBR(ON**3); resetCam(ON*3.6+7); }
-  if (t==='taxi')   { document.getElementById('odds-canvas-overlay').innerHTML=''; updateMetaBR(1729); resetCam(12*1.65+9); }
-  if (t!=='odds')   { document.getElementById('odds-canvas-overlay').innerHTML=''; }
+  layersGrp.visible=t==='layers';
+  oddsGrp.visible=t==='odds';
+  taxiGrp.visible=t==='taxi';
+  document.getElementById('meta-mode').textContent=t.toUpperCase();
+  if(t==='layers'){updateLayerUI();updateMetaBR(LN*LN*LShown);resetCam(LN*3.6+7);}
+  if(t==='odds'){updateOddsUI();updateOverlay();updateMetaBR(ON**3);resetCam(ON*3.6+7);}
+  if(t==='taxi'){document.getElementById('odds-canvas-overlay').innerHTML='';updateMetaBR(1729);resetCam(12*1.65+9);}
+  if(t!=='odds')document.getElementById('odds-canvas-overlay').innerHTML='';
 }
 
-document.querySelectorAll('.tab').forEach(b=>{
-  b.addEventListener('click', () => setTab(b.dataset.t));
-});
-
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.t)));
 setTab('layers');
 </script>
 </body>
